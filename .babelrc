@@ -1,0 +1,19 @@
+{
+  "sourceMaps": "true",
+  "compact": false,
+  "comments": true,
+  "presets": [
+    "es2015"
+  ],
+  "plugins": [
+    [
+      "module-alias",
+      [
+        {
+          "src": "./src/lib",
+          "expose": "lib"
+        }
+      ]
+    ]
+  ]
+}

@@ -1,3 +1,3 @@
-import Norbert from './lib/Norbert';
+import Norbert from 'lib/Norbert';
 
 (new Norbert()).hello();
