@@ -6,7 +6,7 @@
   "scripts": {
     "build": "babel src --out-dir out/",
     "test": "test",
-    "start": "node out/main.js"
+    "start": "NODE_CONFIG_DIR=./out/config node out/main.js"
   },
   "repository": {
     "type": "git",
