@@ -1,6 +1,7 @@
 import LastFmPlugin from 'plugins/LastFmPlugin';
 import HelpPlugin from 'plugins/HelpPlugin';
 import AutoRejoinPlugin from 'plugins/AutoRejoinPlugin';
+import WeatherUndergroundPlugin from 'plugins/WeatherUndergroundPlugin';
 
 let lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -11,6 +12,10 @@ let lastFmOpts = {
     }
 };
 
+let weatherOpts = {
+    api_key: '0347d23efc0576af'
+};
+
 let corePlugins = [
     new HelpPlugin(),
     new AutoRejoinPlugin(1000)
@@ -18,7 +23,7 @@ let corePlugins = [
 
 let plugins = [
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),
-    new HelpPlugin()
+    new WeatherUndergroundPlugin(weatherOpts.api_key)
 ];
 
 export default {

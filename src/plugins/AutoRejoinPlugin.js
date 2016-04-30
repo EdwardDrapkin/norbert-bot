@@ -8,7 +8,6 @@ export default class AutoRejoinPlugin extends Plugin {
 
     constructor(sleep:number = 1000) {
         super();
-        this.receiverMatches = /#.*/;
         this.sleep = sleep;
     }
 
