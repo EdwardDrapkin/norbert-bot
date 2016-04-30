@@ -6,14 +6,20 @@ import Norbert from 'lib/Norbert';
 
 export default class LastFmPlugin extends SimpleChanMsgPlugin {
     lfm:LFM;
+    templates: {
+        np: string,
+        not_np: string
+    };
 
-    constructor(apiKey, secret) {
+    constructor(apiKey:string, secret:string, templates:{[K:string]:string}) {
         super();
         this.lfm = new LFM({api_key: apiKey, secret: secret});
         this.templates = {
             'np': "%user% is currently listening to %title% by %artist%.",
             'not_np': '%user% is currently not listening to anything.'
-        }
+        };
+
+        Object.assign(this.templates, templates);
     }
 
     init(norbert:Norbert) {
@@ -24,23 +30,15 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         norbert.db.run("TRUNCATE TABLE lastfm");
     }
 
-    getTrigger() {
-        return "!";
-    }
-
-    getChannels() {
-        return [];
-    }
-
     getCommands() {
         return {
-            'np': ::this.nowPlaying,
-            'save': ::this.saveUser,
-            'myLastFm': ::this.lookupUser
+            'np': this.nowPlaying.bind(this),
+            'save': this.saveUser.bind(this),
+            'myLastFm': this.lookupUser.bind(this)
         }
     }
 
-    lookupUser(channel, sender, message, norbert) {
+    lookupUser(channel:string, sender:string, message:string, norbert:Norbert) {
         let stmt = norbert.db.prepare("SELECT * FROM lastfm WHERE name=(?)");
         stmt.all([sender], (err, rows) => {
             if(rows.length > 0) {
@@ -51,7 +49,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         });
     }
 
-    saveUser(channel, sender, message, norbert) {
+    saveUser(channel:string, sender:string, message:string, norbert:Norbert) {
         let user = sender;
         let lastFm = message;
 
@@ -65,7 +63,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         });
     }
 
-    nowPlaying(channel, sender, message, norbert) {
+    nowPlaying(channel:string, sender:string, message:string, norbert:Norbert) {
         let user;
         let client = norbert.client;
 
@@ -108,7 +106,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         });
     }
 
-    gatherMetaData(track) {
+    gatherMetaData(track:Object) : {[K:string]:string} {
         let artist = track.hasOwnProperty('artist') &&
             track['artist'].hasOwnProperty('#text') ?
             track['artist']['#text'] : '';
@@ -118,12 +116,12 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
             track['album']['#text'] : '';
         let date = track.hasOwnProperty('date') &&
             track['date'].hasOwnProperty('#uts') ?
-            new Date(track['date']['uts'] * 1000) : '';
+            (new Date(track['date']['uts'] * 1000)).toDateString() : '';
 
         return {artist, title, album, date};
     }
 
-    processTemplate(template, meta) {
+    processTemplate(template:string , meta:{[K:string]:string}) {
         for(let key in meta) {
             template = template.replace(new RegExp(`%${key}%`, 'g'), meta[key]);
         }

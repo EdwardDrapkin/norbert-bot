@@ -9,15 +9,15 @@ export default class SimpleChanMsgPlugin extends Plugin {
         this.receiverMatches = this._buildMatcherRegexp(this.getChannels());
     }
 
-    getChannels() {
+    getChannels() : [string] {
         return [];
     }
 
-    getTrigger() {
+    getTrigger() : string {
         return "!";
     }
 
-    getCommands() {
+    getCommands() : { [k: string]:Function } {
         return {
             test: (channel, sender, message, client) => {
                 client.say(channel, `${sender} said ${message}`);
@@ -25,9 +25,9 @@ export default class SimpleChanMsgPlugin extends Plugin {
         }
     }
 
-    _buildMatcherRegexp(channels:[string]) {
+    _buildMatcherRegexp(channels:[string]) : RegExp {
         if(channels.length == 0) {
-            return '#.*';
+            return /#.*/;
         } else {
             let pattern = "#(" + channels.join(")|(") + ")";
             return new RegExp(pattern);
@@ -44,7 +44,7 @@ export default class SimpleChanMsgPlugin extends Plugin {
         })
     }
 
-    processChanMsg(channel, sender, message, client) {
+    processChanMsg(channel:string, sender:string, message:string, client:Norbert) {
         let words = message.split(/\s+/);
 
         if(words.length == 0) {

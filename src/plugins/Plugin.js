@@ -11,16 +11,8 @@ export default class Plugin {
         this.receiverMatches = /.*/;
     }
 
-    subscribe(norbert:Norbert) {
-        norbert.client.on('CHANMSG', (data) => {
-            console.log(data);
-
-            if(data.receiver.match(this.receiverMatches)) {
-                this.processChanMsg(data.receiver, data.sender, data.message, client);
-            }
-        });
-    }
 
     init(norbert:Norbert) {}
     reset(norbert:Norbert) {}
+    subscribe(norbert:Norbert) {}
 }
