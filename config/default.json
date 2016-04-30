@@ -1,0 +1,12 @@
+{
+  "server": {
+    "hostname": "irc.freenode.net",
+    "port": "6667",
+    "SSL": false,
+    "nick": "norbert-beta",
+    "fullname": "Norbert.The.Bot",
+    "channels": [
+      "##phpbottalk"
+    ]
+  }
+}

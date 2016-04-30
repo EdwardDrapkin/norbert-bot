@@ -1,17 +1,22 @@
 {
-  "sourceMaps": "true",
+  "sourceMaps": "inline",
   "compact": false,
   "comments": true,
   "presets": [
-    "es2015"
+    "es2015",
+    "stage-0"
   ],
   "plugins": [
+    "transform-flow-strip-types",
     [
       "module-alias",
       [
         {
           "src": "./src/lib",
           "expose": "lib"
+        },{
+          "src": "./src/plugins",
+          "expose": "plugins"
         }
       ]
     ]
