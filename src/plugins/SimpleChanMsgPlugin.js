@@ -1,7 +1,7 @@
 // @flow
 
 import Plugin from 'plugins/Plugin';
-import Client from 'node-irc';
+import Norbert from 'lib/Norbert';
 
 export default class SimpleChanMsgPlugin extends Plugin {
     constructor() {
@@ -34,11 +34,11 @@ export default class SimpleChanMsgPlugin extends Plugin {
         }
     }
 
-    subscribe(client:Client) {
-        client.on('CHANMSG', (data) => {
+    subscribe(norbert:Norbert) {
+        norbert.client.on('CHANMSG', (data) => {
             if(data.receiver.match(this.receiverMatches)) {
                 if(data.message.charAt(0) === this.getTrigger()) {
-                    this.processChanMsg(data.receiver, data.sender, data.message, client);
+                    this.processChanMsg(data.receiver, data.sender, data.message, norbert);
                 }
             }
         })
