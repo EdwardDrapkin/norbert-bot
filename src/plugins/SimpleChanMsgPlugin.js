@@ -4,6 +4,8 @@ import Plugin from 'plugins/Plugin';
 import Norbert from 'lib/Norbert';
 
 export default class SimpleChanMsgPlugin extends Plugin {
+    trigger:string;
+
     constructor() {
         super();
         this.receiverMatches = this._buildMatcherRegexp(this.getChannels());

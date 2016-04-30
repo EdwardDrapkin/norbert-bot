@@ -1,7 +1,26 @@
+// @flow
+
 import SimpleChanMsgPlugin from 'plugins/SimpleChanMsgPlugin';
 import Norbert from 'lib/Norbert';
 
 export default class HelpPlugin extends SimpleChanMsgPlugin {
+    meta:{
+        prefix: string,
+        version: string,
+        name: string
+    };
+    helpData:{
+        __commands: {
+            [K:string]: string
+        },
+        [plugin:string] : {
+            overview: string,
+            commands: {
+                [K:string]: string
+            }
+        }
+    };
+
     init(norbert:Norbert) {
         super.init(norbert);
         this.helpData = norbert.helpData;

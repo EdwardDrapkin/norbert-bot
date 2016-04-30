@@ -8,6 +8,11 @@ import sqlite3 from 'sqlite3';
 export default class Norbert {
     client:Client;
     db:sqlite3.Database;
+    meta:{
+        prefix: string,
+        version: string,
+        name: string
+    };
     helpData:{
         __commands: {
             [K:string]: string
@@ -43,7 +48,7 @@ export default class Norbert {
             plugin.init(this);
             this.addHelpData(plugin);
         }
-        
+
         temp.on('ready', () => {
             for(let channel of server.channels) {
                 temp.join(channel);

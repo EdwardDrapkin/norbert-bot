@@ -1,5 +1,6 @@
 import LastFmPlugin from 'plugins/LastFmPlugin';
 import HelpPlugin from 'plugins/HelpPlugin';
+import AutoRejoinPlugin from 'plugins/AutoRejoinPlugin';
 
 let lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -10,32 +11,48 @@ let lastFmOpts = {
     }
 };
 
+let corePlugins = [
+    new HelpPlugin(),
+    new AutoRejoinPlugin(1000)
+];
+
 let plugins = [
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),
     new HelpPlugin()
 ];
 
 export default {
-    "preferences": {
-        "prefix": "!"
+    preferences: {
+        prefix: "!"
     },
 
-    "server": {
-        "hostname": "irc.p2p-network.net",
-        "port": "6667",
-        "SSL": false,
-        "nick": "norbert-beta",
-        "fullname": "Norbert.The.Bot",
-        "channels": [
+    server: {
+        hostname: "irc.p2p-network.net",
+        port: "6667",
+        SSL: false,
+        nick: "norbert-beta",
+        fullname: "Norbert.The.Bot",
+        channels: [
             "#420"
         ]
     },
 
+/*server: {
+        hostname: "irc.freenode.net",
+        port: "6667",
+        SSL: false,
+        nick: "norbert-beta",
+        fullname: "Norbert.The.Bot",
+        channels: [
+            "##phpbottalk"
+        ]
+    },
+ */
     database: {
         type: "sqlite3",
         location: "Norbert.sqlite"
     },
 
-    plugins: plugins
+    plugins: corePlugins.concat(plugins)
 
 };

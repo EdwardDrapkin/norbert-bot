@@ -21,7 +21,9 @@ export default class Plugin {
         commands: {
             [K:string]: string
         }
-    } {}
+    } {
+        throw new Error("this needs to be overriden.");
+    }
 
     getName():string {
         throw new Error("this needs to be overriden.");
