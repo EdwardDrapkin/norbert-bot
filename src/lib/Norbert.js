@@ -2,6 +2,7 @@
 
 import config from 'config';
 import Client from 'node-irc';
+import Plugin from 'plugins/Plugin';
 
 export default class Norbert {
     client:Client;
@@ -15,6 +16,12 @@ export default class Norbert {
                 temp.join(channel);
             }
         });
+
+        let plugins:[Plugin] = config.get('plugins');
+
+        for(let plugin of plugins) {
+            plugin.subscribe(temp);
+        }
 
         temp.connect();
 
