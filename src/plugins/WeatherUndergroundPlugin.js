@@ -13,12 +13,12 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     getName() {
-        return "AutoRejoin";
+        return "WeatherUnderground";
     }
 
     getHelp() {
         return {
-            overview: "AutoRejoin when KICKed",
+            overview: "Weather Underground Plugin",
             commands: {
                 "weather" : "Gets the weather, shocking!"
             }
