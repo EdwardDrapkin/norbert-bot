@@ -15,4 +15,15 @@ export default class Plugin {
     init(norbert:Norbert) {}
     reset(norbert:Norbert) {}
     subscribe(norbert:Norbert) {}
+
+    getHelp() : {
+        overview: string,
+        commands: {
+            [K:string]: string
+        }
+    } {}
+
+    getName():string {
+        throw new Error("this needs to be overriden.");
+    }
 }

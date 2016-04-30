@@ -23,6 +23,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
     }
 
     init(norbert:Norbert) {
+        super.init(norbert);
         norbert.db.run("CREATE TABLE IF NOT EXISTS lastfm (name TEXT PRIMARY KEY, lastfm TEXT)");
     }
 
@@ -30,11 +31,26 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         norbert.db.run("TRUNCATE TABLE lastfm");
     }
 
+    getName() {
+        return "Last.FM";
+    }
+
     getCommands() {
         return {
             'np': this.nowPlaying.bind(this),
-            'save': this.saveUser.bind(this),
+            'setLastFm': this.saveUser.bind(this),
             'myLastFm': this.lookupUser.bind(this)
+        }
+    }
+
+    getHelp() {
+        return {
+            overview: "Last.FM API Plugin",
+            commands: {
+                np: "(user?) - show your now playing track, or another user's.",
+                setLastFm: "(user) - save your last.fm username instead of defaulting to your IRC handle.",
+                myLastFm: "retrieve your saved last.fm username, if any."
+            }
         }
     }
 

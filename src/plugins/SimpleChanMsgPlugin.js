@@ -14,7 +14,7 @@ export default class SimpleChanMsgPlugin extends Plugin {
     }
 
     getTrigger() : string {
-        return "!";
+        return this.trigger ? this.trigger : '!';
     }
 
     getCommands() : { [k: string]:Function } {
@@ -32,6 +32,11 @@ export default class SimpleChanMsgPlugin extends Plugin {
             let pattern = "#(" + channels.join(")|(") + ")";
             return new RegExp(pattern);
         }
+    }
+
+
+    init(norbert:Norbert) {
+        this.trigger = norbert.meta.prefix;
     }
 
     subscribe(norbert:Norbert) {
