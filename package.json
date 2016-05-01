@@ -1,6 +1,6 @@
 {
   "name": "norbert-bot",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "norbert the irc bot",
   "main": "out/main.js",
   "scripts": {

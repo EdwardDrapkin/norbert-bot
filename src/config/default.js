@@ -3,6 +3,8 @@ import HelpPlugin from 'plugins/HelpPlugin';
 import UrlTitlePlugin from 'plugins/UrlTitlePlugin';
 import AutoRejoinPlugin from 'plugins/AutoRejoinPlugin';
 import WeatherUndergroundPlugin from 'plugins/WeatherUndergroundPlugin';
+import KarmaPolicePlugin from 'plugins/KarmaPolicePlugin.js';
+import KarmaPlugin from 'plugins/KarmaPlugin.js';
 
 let lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -25,7 +27,9 @@ let corePlugins = [
 let plugins = [
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),
     new WeatherUndergroundPlugin(weatherOpts.api_key),
-    new UrlTitlePlugin()
+    new UrlTitlePlugin(2000),
+    new KarmaPolicePlugin(),
+    new KarmaPlugin()
 ];
 
 export default {

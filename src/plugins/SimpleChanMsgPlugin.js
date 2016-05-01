@@ -5,12 +5,12 @@ import Norbert from 'lib/Norbert';
 
 export default class SimpleChanMsgPlugin extends Plugin {
     trigger:string;
-    commands:{[k: string]:Function};
+    _commands:{[k: string]:Function};
 
     constructor() {
         super();
         this.receiverMatches = this._buildMatcherRegexp(this.getChannels());
-        this.commands = this._getCommands();
+        this._commands = this._getCommands();
     }
 
     getChannels() : [string] {
@@ -69,8 +69,8 @@ export default class SimpleChanMsgPlugin extends Plugin {
 
         let command = words.shift().substr(1).toLowerCase();
 
-        if(this.commands.hasOwnProperty(command)) {
-            this.commands[command].call(this, channel, sender, words.join(' '), client);
+        if(this._commands.hasOwnProperty(command)) {
+            this._commands[command].call(this, channel, sender, words.join(' '), client);
         }
 
 

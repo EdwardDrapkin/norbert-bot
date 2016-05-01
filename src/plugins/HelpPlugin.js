@@ -35,7 +35,7 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
         return {
             overview: "Help and Hello Plugin",
             commands: {
-                commands: "show a list of available commands.",
+                commands: "show a list of available _commands.",
                 hello: "say hello to the world.",
                 help: "tell you everything I know about a specific command."
             }
@@ -70,7 +70,8 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
 
 
     plugins(channel:string, sender:string, message:string, norbert:Norbert) {
-        let _plugins = this.helpData;
+        let _plugins = {};
+        Object.assign(_plugins, this.helpData);
         delete _plugins['__commands'];
 
         let pluginsN = Object.keys(_plugins).length;

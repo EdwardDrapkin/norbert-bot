@@ -5,8 +5,11 @@ import Norbert from 'lib/Norbert';
 import MetaInspector from 'node-metainspector';
 
 export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
-    constructor() {
+    timeout:Number;
+
+    constructor(timeout:Number) {
         super();
+        this.timeout = timeout;
     }
 
     getTriggers() :[ (word:string) => false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void] {
@@ -20,7 +23,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     }
 
     getUrlTitle(channel:string, sender:string, message:string, client:Norbert, triggered:string) {
-        let inspector = new MetaInspector(triggered, {timeout: 2000});
+        let inspector = new MetaInspector(triggered, {timeout: this.timeout});
 
         inspector.on("fetch", function() {
             client.client.say(channel, `<${sender}> ${triggered} - ${inspector.title}`)
