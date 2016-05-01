@@ -1,9 +1,10 @@
 // @flow
 
-import SimpleChannelDaemonPlugin from 'plugins/SimpleChannelDaemonPlugin';
+import SimpleChanDaemonPlugin from 'plugins/SimpleChanDaemonPlugin';
 import Norbert from 'lib/Norbert';
 import MetaInspector from 'node-metainspector';
-export default class UrlTitlePlugin extends SimpleChannelDaemonPlugin {
+
+export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     constructor() {
         super();
     }
