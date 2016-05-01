@@ -3,27 +3,22 @@
 import Plugin from 'plugins/Plugin';
 import Norbert from 'lib/Norbert';
 
-export default class SimpleChanMsgPlugin extends Plugin {
-    trigger:string;
-
+export default class SimpleChannelDaemonPlugin extends Plugin {
     constructor() {
         super();
         this.receiverMatches = this._buildMatcherRegexp(this.getChannels());
     }
 
-    getChannels() : [string] {
+    getChannels():[string] {
         return [];
     }
 
-    getTrigger() : string {
-        return this.trigger ? this.trigger : '!';
-    }
-
-    getCommands() : { [k: string]:Function } {
+    getTriggers():[(word:string) => false|(channel:string, sender:string, message:string, client:Norbert,
+        triggered:string)=>void] {
         throw new Error("This needs to be overriden.");
     }
 
-    _buildMatcherRegexp(channels:[string]) : RegExp {
+    _buildMatcherRegexp(channels:[string]):RegExp {
         if(channels.length == 0) {
             return /#.*/;
         } else {
@@ -32,17 +27,10 @@ export default class SimpleChanMsgPlugin extends Plugin {
         }
     }
 
-
-    init(norbert:Norbert) {
-        this.trigger = norbert.meta.prefix;
-    }
-
     subscribe(norbert:Norbert) {
         norbert.client.on('CHANMSG', (data) => {
             if(data.receiver.match(this.receiverMatches)) {
-                if(data.message.charAt(0) === this.getTrigger()) {
-                    this.processChanMsg(data.receiver, data.sender, data.message, norbert);
-                }
+                this.processChanMsg(data.receiver, data.sender, data.message, norbert);
             }
         })
     }
@@ -55,13 +43,14 @@ export default class SimpleChanMsgPlugin extends Plugin {
             return;
         }
 
-        let command = words.shift().substr(1);
-        let commands = this.getCommands();
+        words.forEach((word) => {
+            for(let matcher:Function of this.getTriggers()) {
+                let parser = matcher.call(this, word);
 
-        if(commands.hasOwnProperty(command)) {
-            commands[command].call(this, channel, sender, words.join(' '), client);
-        }
-
-
+                if(parser !== false) {
+                    parser.call(this, channel, sender, message, client, word);
+                }
+            }
+        });
     }
 }

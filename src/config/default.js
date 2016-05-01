@@ -1,5 +1,6 @@
 import LastFmPlugin from 'plugins/LastFmPlugin';
 import HelpPlugin from 'plugins/HelpPlugin';
+import UrlTitlePlugin from 'plugins/UrlTitlePlugin';
 import AutoRejoinPlugin from 'plugins/AutoRejoinPlugin';
 import WeatherUndergroundPlugin from 'plugins/WeatherUndergroundPlugin';
 
@@ -23,7 +24,8 @@ let corePlugins = [
 
 let plugins = [
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),
-    new WeatherUndergroundPlugin(weatherOpts.api_key)
+    new WeatherUndergroundPlugin(weatherOpts.api_key),
+    new UrlTitlePlugin()
 ];
 
 export default {
@@ -31,7 +33,7 @@ export default {
         prefix: "!"
     },
 
-    server: {
+    /*server: {
         hostname: "irc.p2p-network.net",
         port: "6667",
         SSL: false,
@@ -40,9 +42,9 @@ export default {
         channels: [
             "#420"
         ]
-    },
+    },*/
 
-/*server: {
+server: {
         hostname: "irc.freenode.net",
         port: "6667",
         SSL: false,
@@ -52,7 +54,7 @@ export default {
             "##phpbottalk"
         ]
     },
- */
+
     database: {
         type: "sqlite3",
         location: "Norbert.sqlite"
