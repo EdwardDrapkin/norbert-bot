@@ -77,7 +77,7 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
         let pluginsN = Object.keys(_plugins).length;
         let pluginsS = Object.keys(_plugins).join(', ');
 
-        let msg = `${pluginsN} available: (${pluginsS}). For more information use ${this.meta.prefix}plugin command.`
+        let msg = `${pluginsN} available: (${pluginsS}). For more information use the ${this.meta.prefix}plugin command.`
         norbert.client.say(channel, msg);
 
     }
