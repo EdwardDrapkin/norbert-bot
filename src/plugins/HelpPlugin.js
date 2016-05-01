@@ -45,8 +45,13 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
     specificCommandHelp(channel:string, sender:string, message:string, norbert:Norbert) {
         let command = message.trim();
 
+        if(!command) {
+            return this.help(channel,sender,message,norbert);
+        }
+
         if(!this.helpData['__commands'].hasOwnProperty(command)) {
-            norbert.client.say(channel, `I don't know anything about ${message}`);
+            norbert.client.say(channel, `I don't know anything about a command named ${message}.`);
+            return;
         }
 
         let msg = `${this.meta.prefix}${command}: ${this.helpData['__commands'][command]}`;
@@ -77,7 +82,8 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
     }
 
     plugin(channel:string, sender:string, message:string, norbert:Norbert) {
-        let _plugins = this.helpData;
+        let _plugins = {};
+        Object.assign(_plugins, this.helpData);
         delete _plugins['__commands'];
 
         if(!_plugins.hasOwnProperty(message.trim())) {
@@ -94,6 +100,7 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
     }
 
     commands(channel:string, sender:string, message:string, norbert:Norbert) {
+
         let commandsN = Object.keys(this.helpData['__commands']).length;
         let commandsS = Object.keys(this.helpData['__commands']).join(', ');
 

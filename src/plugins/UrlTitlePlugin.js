@@ -3,7 +3,6 @@
 import SimpleChannelDaemonPlugin from 'plugins/SimpleChannelDaemonPlugin';
 import Norbert from 'lib/Norbert';
 import MetaInspector from 'node-metainspector';
-
 export default class UrlTitlePlugin extends SimpleChannelDaemonPlugin {
     constructor() {
         super();

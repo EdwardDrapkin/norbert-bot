@@ -33,12 +33,34 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     getWeather(channel:string, sender:string, message:string, norbert:Norbert) {
+        if(!message.trim()) {
+            return;
+        }
+
         this.client.conditions({city: message}, (err, data) => {
-            norbert.client.say(channel, this.getWeatherConditionsString(data));
+            let conditions = this.getWeatherConditionsString(data);
+            if(conditions === false) {
+                conditions = `No weather found for ${message}`;
+            }
+
+            norbert.client.say(channel, conditions);
         });
     }
 
     getWeatherConditionsString(data:Object) {
+        if(!data ||
+            !data.hasOwnProperty('observation_location') ||
+            !data.hasOwnProperty('temperature_string') ||
+            !data.hasOwnProperty('observation_time') ||
+            !data.hasOwnProperty('weather') ||
+            !data.hasOwnProperty('relative_humidity') ||
+            !data.hasOwnProperty('wind_string') ||
+            !data.hasOwnProperty('feelslike_string') ||
+            !data.hasOwnProperty('forecast_url')
+        ) {
+            return false;
+        }
+
         let location = data.observation_location.full;
         let temp = data.temperature_string;
         let observation = data.observation_time;
