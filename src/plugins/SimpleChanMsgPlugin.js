@@ -32,6 +32,16 @@ export default class SimpleChanMsgPlugin extends Plugin {
         }
     }
 
+    _getCommands() {
+        let temp = {};
+
+        Object.keys(this.getCommands()).forEach(key => {
+            temp[key.toLowerCase()] = this.getCommands()[key]
+        });
+        
+        return temp;
+    }
+
 
     init(norbert:Norbert) {
         this.trigger = norbert.meta.prefix;
@@ -55,8 +65,8 @@ export default class SimpleChanMsgPlugin extends Plugin {
             return;
         }
 
-        let command = words.shift().substr(1);
-        let commands = this.getCommands();
+        let command = words.shift().substr(1).toLowerCase();
+        let commands = this._getCommands();
 
         if(commands.hasOwnProperty(command)) {
             commands[command].call(this, channel, sender, words.join(' '), client);
