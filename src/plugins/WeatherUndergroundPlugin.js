@@ -20,21 +20,58 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
         return {
             overview: "Weather Underground Plugin",
             commands: {
-                "weather" : "Gets the weather, shocking!"
+                weather : "Gets the weather, shocking!",
+                setWeather : "Sets your weather location"
             }
         }
     }
 
     getCommands() {
         return {
-            weather: this.getWeather.bind(this)
+            weather: this.getWeather.bind(this),
+            setWeather: this.saveUser.bind(this)
         }
 
     }
 
+    init(norbert:Norbert) {
+        super.init(norbert);
+        norbert.db.run("CREATE TABLE IF NOT EXISTS weather (name TEXT PRIMARY KEY, weather TEXT)");
+    }
+
+    reset(norbert:Norbert) {
+        norbert.db.run("TRUNCATE TABLE weather");
+    }
+
+    saveUser(channel:string, sender:string, message:string, norbert:Norbert) {
+        let user = sender;
+        let weather = message;
+
+        let stmt = norbert.db.prepare("INSERT OR REPLACE INTO weather (name, weather) VALUES (?, ?)");
+        stmt.run([user, weather], (err) => {
+            if(err) {
+                norbert.client.say(channel, "error oh noes");
+            } else {
+                norbert.client.say(channel, `${sender}, I will now remember your location as ${weather}`);
+            }
+        });
+    }
+
+    lookupUser(channel:string, sender:string, message:string, norbert:Norbert) {
+        let stmt = norbert.db.prepare("SELECT * FROM weather WHERE name=(?)");
+        stmt.all([sender], (err, rows) => {
+            if(rows.length > 0) {
+                let weather = rows[0].weather;
+                return this.getWeather(channel, sender, weather, norbert);
+            } else {
+                norbert.client.say(channel, `${sender}, I don't have any weather location saved for you.`);
+            }
+        });
+    }
+
     getWeather(channel:string, sender:string, message:string, norbert:Norbert) {
         if(!message.trim()) {
-            return;
+            return this.lookupUser(channel, sender, message, norbert);
         }
 
         this.client.conditions({city: message}, (err, data) => {
