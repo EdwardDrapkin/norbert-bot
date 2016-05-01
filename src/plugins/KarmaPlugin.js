@@ -16,7 +16,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
 
     getCommands() {
         return {
-            karma : this.checkKarma.bind(this),
+            karma : this.checkKarma.bind(this)
         }
     }
 
@@ -24,7 +24,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         return {
             overview: "Ask the Buddha for where your soul stands on the karmic balance.",
             commands: {
-                karma: "(soul?) - show a soul's karma.",
+                karma: "(soul?) - show a soul's karma."
             }
         }
     }
