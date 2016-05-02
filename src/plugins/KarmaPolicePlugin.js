@@ -15,7 +15,7 @@ export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
         return "KarmaPolice";
     }
 
-    getTriggers():[ (word:string) => false|(channel:string, sender:string, message:string, client:Norbert,
+    getTriggers():[ (word:string, sender:string, channel:string) => false|(channel:string, sender:string, message:string, client:Norbert,
         triggered:string)=>void] {
         return [
             this.isKarmaIncrement,
@@ -32,12 +32,12 @@ export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
         norbert.db.run("TRUNCATE TABLE karma");
     }
 
-    isKarmaIncrement(word:string) {
+    isKarmaIncrement(word:string, sender:string, channel:string) {
         return word.endsWith('++') ?
                this.incrementKarma : false;
     }
 
-    isKarmaDecrement(word:string) {
+    isKarmaDecrement(word:string, sender:string, channel:string) {
         return word.endsWith('--') ?
                this.decrementKarma : false;
     }

@@ -12,13 +12,13 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         this.timeout = timeout;
     }
 
-    getTriggers() :[ (word:string) => false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void] {
+    getTriggers() :[ (word:string, sender:string, channel:string) => false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void] {
         return [
             this.isUrl
         ];
     }
 
-    isUrl(word:string) :false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void {
+    isUrl(word:string, sender:string, channel:string) :false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void {
         return word.match(/[^\b]+\.[a-z]{2,6}/i) != null ? this.getUrlTitle : false;
     }
 
