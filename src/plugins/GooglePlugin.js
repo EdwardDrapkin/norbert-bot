@@ -77,7 +77,7 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
                     norbert.client.say(channel, msg);
                 }
             } else {
-                norbert.client.say(channel, results.join(" "));
+                norbert.client.say(channel, results.join(""));
             }
 
         }
