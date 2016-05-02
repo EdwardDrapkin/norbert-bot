@@ -26,7 +26,7 @@ export default class Norbert {
     };
 
     constructor() {
-        let server:{hostname:string,port:string,nick:string,fullname:string,channels:[string]} = config.get('server');
+        let server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
         let temp = new Client(server.hostname, server.port, server.nick, server.fullname);
         let plugins:[Plugin] = config.get('plugins');
         let pjson = require('../../package.json');
@@ -48,10 +48,9 @@ export default class Norbert {
             plugin.init(this);
             this.addHelpData(plugin);
         }
-
         temp.on('ready', () => {
-            for(let channel of server.channels) {
-                temp.join(channel);
+            for(let channel of server.channels.split(",")) {
+                temp.join(channel.trim());
             }
         });
 

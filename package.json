@@ -31,6 +31,8 @@
   },
   "dependencies": {
     "config": "^1.20.1",
+    "goo.gl": "^0.1.4",
+    "google": "^2.0.0",
     "lastfmapi": "^0.1.1",
     "nedb": "^1.8.0",
     "node-irc": "0.0.3",

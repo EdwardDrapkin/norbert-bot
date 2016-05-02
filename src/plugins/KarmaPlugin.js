@@ -1,10 +1,9 @@
 // @flow
 
 import SimpleChanMsgPlugin from 'plugins/SimpleChanMsgPlugin';
-import LFM from 'lastfmapi';
 import Norbert from 'lib/Norbert';
 
-export default class LastFmPlugin extends SimpleChanMsgPlugin {
+export default class KarmaPlugin extends SimpleChanMsgPlugin {
     init(norbert:Norbert) {
         super.init(norbert);
         norbert.db.run("CREATE TABLE IF NOT EXISTS karma (name TEXT PRIMARY KEY, channel TEXT, score INTEGER)");
