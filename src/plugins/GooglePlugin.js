@@ -47,7 +47,7 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
 
             for(let link of results.links) {
                 if(link.href != null && link.title != null && count < numResults) {
-                    links.push(link);
+                    links.unshift(link);
                     count++;
                 }
             }
@@ -72,9 +72,14 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
                     this.shorten(links, results, num, channel, sender, message, norbert);
                 });
         } else {
-            for(let msg of results) {
-                norbert.client.say(channel, msg);
+            if(results.length > 2) {
+                for(let msg of results) {
+                    norbert.client.say(channel, msg);
+                }
+            } else {
+                norbert.client.say(channel, results.join(" "));
             }
+
         }
 
     }
