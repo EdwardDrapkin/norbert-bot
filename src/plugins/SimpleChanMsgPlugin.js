@@ -50,10 +50,10 @@ export default class SimpleChanMsgPlugin extends Plugin {
     }
 
     subscribe(norbert:Norbert) {
-        norbert.client.on('CHANMSG', (data) => {
-            if(data.receiver.match(this.receiverMatches)) {
-                if(data.message.charAt(0) === this.getTrigger()) {
-                    this.processChanMsg(data.receiver, data.sender, data.message, norbert);
+        norbert.client.on('message', (from, to, message) => {
+            if(to.match(this.receiverMatches)) {
+                if(message.charAt(0) === this.getTrigger()) {
+                    this.processChanMsg(to, from, message, norbert);
                 }
             }
         })

@@ -1,7 +1,7 @@
 // @flow
 
 import config from 'config';
-import Client from 'node-irc';
+import irc from 'irc';
 import Plugin from 'plugins/Plugin';
 import sqlite3 from 'sqlite3';
 
@@ -27,9 +27,15 @@ export default class Norbert {
 
     constructor() {
         let server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
-        let temp = new Client(server.hostname, server.port, server.nick, server.fullname);
+        let temp = new irc.Client(server.hostname, server.nick, {
+            realName: server.fullname,
+            username: 'norbert',
+            debug: true,
+            channels: server.channels.split(',').map(e=>e.trim())
+        });
         let plugins:[Plugin] = config.get('plugins');
         let pjson = require('../../package.json');
+
 
         this.client = temp;
         this.db = new sqlite3.Database(config.get('database.location'));
@@ -48,11 +54,12 @@ export default class Norbert {
             plugin.init(this);
             this.addHelpData(plugin);
         }
-        temp.on('ready', () => {
-            for(let channel of server.channels.split(",")) {
-                temp.join(channel.trim());
-            }
+
+        temp.on('error', (e) => {
+            console.log(e);
         });
+
+        temp.debug = true;
 
         temp.connect();
     }

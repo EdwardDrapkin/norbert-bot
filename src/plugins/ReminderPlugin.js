@@ -33,9 +33,9 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
     subscribe(norbert:Norbert) {
         super.subscribe(norbert);
 
-        norbert.client.on('CHANMSG', (data) => {
-            if(data.receiver.match(this.receiverMatches)) {
-                this.detectReminders(data.receiver, data.sender, data.message, norbert);
+        norbert.client.on('message', (from, to, message) => {
+            if(to.match(this.receiverMatches)) {
+                this.detectReminders(to, from, message, norbert);
             }
         })
     }

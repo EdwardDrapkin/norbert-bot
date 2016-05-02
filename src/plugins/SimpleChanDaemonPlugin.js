@@ -28,9 +28,9 @@ export default class SimpleChannelDaemonPlugin extends Plugin {
     }
 
     subscribe(norbert:Norbert) {
-        norbert.client.on('CHANMSG', (data) => {
-            if(data.receiver.match(this.receiverMatches)) {
-                this.processChanMsg(data.receiver, data.sender, data.message, norbert);
+        norbert.client.on('message', (from, to, message) => {
+            if(to.match(this.receiverMatches)) {
+                this.processChanMsg(to, from, message, norbert);
             }
         })
     }
