@@ -6,7 +6,7 @@ import Plugin from 'plugins/Plugin';
 import sqlite3 from 'sqlite3';
 
 export default class Norbert {
-    client:Client;
+    client:irc.Client;
     db:sqlite3.Database;
     meta:{
         prefix: string,
@@ -27,14 +27,17 @@ export default class Norbert {
 
     constructor() {
         let server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
+        let plugins:[Plugin] = config.get('plugins');
+        let pjson = require('../../package.json');
+        
         let temp = new irc.Client(server.hostname, server.nick, {
             realName: server.fullname,
-            username: 'norbert',
             debug: true,
             channels: server.channels.split(',').map(e=>e.trim())
         });
-        let plugins:[Plugin] = config.get('plugins');
-        let pjson = require('../../package.json');
+
+        temp.debug = true;
+        temp.setMaxListeners(1000);
 
 
         this.client = temp;
@@ -59,9 +62,7 @@ export default class Norbert {
             console.log(e);
         });
 
-        temp.debug = true;
 
-        temp.connect();
     }
 
     addHelpData(plugin:Plugin) {

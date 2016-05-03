@@ -26,7 +26,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         let inspector = new MetaInspector(triggered, {timeout: this.timeout});
 
         inspector.on("fetch", function() {
-            client.client.say(channel, `<${sender}> ${triggered} - ${inspector.title}`)
+            client.client.say(channel, `<${sender}> ${triggered} - ${inspector.title.trim()}`)
         });
 
         inspector.on("error", () => {});
