@@ -8,6 +8,7 @@ import KarmaPlugin from 'plugins/KarmaPlugin.js';
 import GooglePlugin from 'plugins/GooglePlugin.js';
 import WolframAlphaPlugin from 'plugins/WolframAlphaPlugin';
 import ReminderPlugin from 'plugins/ReminderPlugin';
+import DiceRollerPlugin from 'plugins/DiceRollerPlugin';
 
 let lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -43,7 +44,8 @@ let plugins = [
     new UrlTitlePlugin(2000),
     new KarmaPolicePlugin(),
     new KarmaPlugin(),
-    new ReminderPlugin()
+    new ReminderPlugin(),
+    new DiceRollerPlugin()
 ];
 
 export default {
@@ -51,24 +53,24 @@ export default {
         prefix: "!"
     },
 
-    server: {
+    /*server: {
         hostname: "irc.p2p-network.net",
         port: "6667",
         SSL: false,
         nick: "norbert-beta",
         fullname: "Norbert.The.Bot",
         channels: "#420"
-    },
+    },*/
 
-/*server: {
+server: {
         hostname: "irc.freenode.net",
         port: "6667",
         SSL: false,
         nick: "norbert-beta",
         fullname: "Norbert.The.Bot",
-        channels:"##phpbottalk"
+        channels:"##phpbartalk"
 
-    },*/
+    },
 
     database: {
         type: "sqlite3",

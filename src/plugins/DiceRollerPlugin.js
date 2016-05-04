@@ -16,7 +16,7 @@ export default class DiceRollerPlugin extends SimpleChanMsgPlugin {
         return {
             overview: "Roll a dice.",
             commands: {
-                wa: "[sides] - number of sides to roll"
+                roll: "[sides] - number of sides to roll"
             }
         }
     }
