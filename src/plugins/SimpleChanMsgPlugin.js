@@ -46,6 +46,7 @@ export default class SimpleChanMsgPlugin extends Plugin {
 
 
     init(norbert:Norbert) {
+        super.init(norbert);
         this.trigger = norbert.meta.prefix;
     }
 

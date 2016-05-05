@@ -20,14 +20,16 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
-        norbert.db.run("CREATE TABLE IF NOT EXISTS reminders (" +
+        norbert.db.run("" +
+            "CREATE TABLE IF NOT EXISTS reminders (" +
             "ID INTEGER PRIMARY KEY," +
             "from_who TEXT, " +
             "channel TEXT, " +
             "to_who TEXT, " +
             "remind_after INTEGER," +
             "reminder TEXT," +
-            "created INTEGER)");
+            "created INTEGER" +
+            ")");
     }
 
     subscribe(norbert:Norbert) {
