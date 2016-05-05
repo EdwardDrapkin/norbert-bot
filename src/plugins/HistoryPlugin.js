@@ -50,10 +50,12 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
 
         stmt.all([message], (err, rows) => {
             if(err) {
-                console.error(error);
+                console.error(err);
                 norbert.client.say("Error");
                 return;
-            } else if (rows.length > 0) {
+            }
+
+            if (rows.length > 0) {
                 norbert.client.say(channel, this.createMessageFromRow(rows[0]));
             } else {
                 norbert.client.say(channel, `I don't remember ${message} at all, sadly.`);
@@ -62,7 +64,7 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
         });
     }
 
-    createMessageFromRow(row){
+    createMessageFromRow(row : {to:string, from:string, message: string, timestamp: number, event:string}){
         let humanDate = new Date(row.timestamp).toLocaleDateString('en-US',
             {hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short'});
 
