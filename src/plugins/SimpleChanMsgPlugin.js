@@ -53,14 +53,12 @@ export default class SimpleChanMsgPlugin extends Plugin {
     subscribe(norbert:Norbert) {
         norbert.client.on('message', (from, to, message) => {
             if(to.match(this.receiverMatches)) {
-                if(message.charAt(0) === this.getTrigger()) {
-                    this.processChanMsg(to, from, message, norbert);
-                }
+                this.processChanMsg(to, from, message, norbert);
             }
         })
     }
 
-    processChanMsg(channel:string, sender:string, message:string, client:Norbert) {
+    processChanMsg(channel:string, sender:string, message:string, norbert:Norbert) {
         let words = message.split(/\s+/);
 
         if(words.length == 0) {
@@ -68,10 +66,17 @@ export default class SimpleChanMsgPlugin extends Plugin {
             return;
         }
 
-        let command = words.shift().substr(1).toLowerCase();
+        let command;
+        if(words[0].startsWith(this.getTrigger())) {
+            command = words.shift().substr(1).toLowerCase();
+        } else if (words[0].startsWith(norbert.client.nick) + words[0].length <= norbert.client.nick.length + 1) {
+            words.shift();
+            command = words.shift().toLowerCase();
+        }
+
 
         if(this._commands.hasOwnProperty(command)) {
-            this._commands[command].call(this, channel, sender, words.join(' '), client);
+            this._commands[command].call(this, channel, sender, words.join(' '), norbert);
         }
 
 
