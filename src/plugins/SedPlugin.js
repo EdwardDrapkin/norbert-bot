@@ -40,8 +40,17 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
 
         let {search, replace, flags} = parsed;
 
-        // $FlowIgnore
-        let searchExp = new RegExp(search, flags);
+        let searchExp;
+
+        try {
+            searchExp = new RegExp(search, flags);
+        } catch(e) {
+            try {
+                searchExp = new RegExp(search);
+            } catch(e) {
+                searchExp = search;
+            }
+        }
 
         //get recent 5 messages from this channel and try to apply them
         let stmt = norbert.db.prepare("SELECT * FROM history " +
