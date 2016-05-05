@@ -8,6 +8,7 @@ import sqlite3 from 'sqlite3';
 export default class Norbert {
     client:irc.Client;
     db:sqlite3.Database;
+    loaded: { [plugin:string] : true };
     meta:{
         prefix: string,
         version: string,
@@ -26,22 +27,14 @@ export default class Norbert {
     };
 
     constructor() {
-        let server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
+        this.setupDatabase();
+        this.setupClient();
+
         let plugins:[Plugin] = config.get('plugins');
         let pjson = require('../../package.json');
-        
-        let temp = new irc.Client(server.hostname, server.nick, {
-            realName: server.fullname,
-            debug: true,
-            channels: server.channels.split(',').map(e=>e.trim())
-        });
 
-        temp.debug = true;
-        temp.setMaxListeners(1000);
+        this.loaded = {};
 
-
-        this.client = temp;
-        this.db = new sqlite3.Database(config.get('database.location'));
         this.helpData = {
             __commands: {}
         };
@@ -53,22 +46,59 @@ export default class Norbert {
         };
 
         for(let plugin of plugins) {
-            plugin.subscribe(this);
-            plugin.init(this);
-            this.addHelpData(plugin);
+            this.loadPlugin(plugin);
         }
+    }
 
-        temp.on('error', (e) => {
-            console.log(e);
+    loadPlugin(plugin:Plugin) {
+        plugin.init(this);
+        plugin.subscribe(this);
+        this.addHelpData(plugin);
+        this.loaded[plugin.getName()] = true;
+    }
+
+    setupClient() {
+        let server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
+
+        let temp = new irc.Client(server.hostname, server.nick, {
+            realName: server.fullname,
+            debug: true,
+            channels: server.channels.split(',').map(e=>e.trim())
         });
 
+        temp.debug = true;
+        temp.setMaxListeners(1000);
+
+        temp.on('error', (e) => {
+            console.error(e);
+        });
+
+        this.client = temp;
+    }
+
+    setupDatabase() {
+        this.db = new sqlite3.Database(config.get('database.location'));
+        console.info("Startup DB vacuum, this may take a moment.");
+        this.db.run("VACUUM");
+        console.info("Vacuuming finished.  Thanks for your patience!");
+        this.db.run("PRAGMA auto_vacuum = 2;");
 
     }
 
     addHelpData(plugin:Plugin) {
         let name = plugin.getName();
-        this.helpData[name] = plugin.getHelp();
-        Object.assign(this.helpData['__commands'], plugin.getHelp().commands);
+        let help = plugin.getHelp();
+
+        //this is ugly but it allows convenience for plugin devs
+        if(!help.hasOwnProperty('commands')) {
+            help.commands = {};
+        }
+
+        this.helpData[name] = help;
+        Object.assign(this.helpData['__commands'], help.commands);
     }
 
+    hasPlugin(plugin:string) {
+        return this.loaded.hasOwnProperty(plugin) && this.loaded[plugin] === true;
+    }
 }
