@@ -69,7 +69,7 @@ export default class SimpleChanMsgPlugin extends Plugin {
         let command;
         if(words[0].startsWith(this.getTrigger())) {
             command = words.shift().substr(1).toLowerCase();
-        } else if (words[0].startsWith(norbert.client.nick) + words[0].length <= norbert.client.nick.length + 1) {
+        } else if (words[0].startsWith(norbert.client.nick) && words[0].length <= norbert.client.nick.length + 1) {
             words.shift();
             command = words.shift().toLowerCase();
         }
