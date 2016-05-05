@@ -48,7 +48,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
             try {
                 searchExp = new RegExp(search);
             } catch(e) {
-                searchExp = search;
+                return; //fail here because it's not a valid search
             }
         }
 
