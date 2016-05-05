@@ -25,12 +25,15 @@ export default class HistoryPlugin extends Plugin {
             "sender TEXT, " +
             "message TEXT, " +
             "timestamp INTEGER" +
-            ")");
+            ")", () => {
 
-        this.stmt = norbert.db.prepare("" +
-            "INSERT INTO history " +
-            "(channel, sender, message, timestamp) " +
-            "VALUES (?, ?, ?, ?)");
+                this.stmt = norbert.db.prepare("" +
+                    "INSERT INTO history " +
+                    "(channel, sender, message, timestamp) " +
+                    "VALUES (?, ?, ?, ?)");
+        });
+
+
     }
 
     subscribe(norbert:Norbert) {
@@ -52,5 +55,5 @@ export default class HistoryPlugin extends Plugin {
         })
     }
 
-    
+
 }

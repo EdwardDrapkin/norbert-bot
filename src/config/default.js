@@ -73,15 +73,14 @@ export default {
         prefix: "!"
     },
 
-    server: {
+   /* server: {
         hostname: "irc.p2p-network.net",
         port: "6667",
         SSL: false,
         nick: "norbert-beta",
         fullname: "Norbert.The.Bot",
         channels: "#420-bots"
-    },
-    /*
+    },*/
 
      server: {
      hostname: "irc.freenode.net",
@@ -92,7 +91,6 @@ export default {
      channels:"##phpbartalk"
 
      },
-     */
 
     database: {
         type: "sqlite3",
