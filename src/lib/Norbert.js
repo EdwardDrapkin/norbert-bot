@@ -20,7 +20,7 @@ export default class Norbert {
         },
         [plugin:string] : {
             overview: string,
-            commands: {
+            commands?: {
                 [K:string]: string
             }
         }

@@ -13,7 +13,7 @@ export default class SimpleChannelDaemonPlugin extends Plugin {
         return [];
     }
 
-    getTriggers():[(word:string, sender:string, channel:string) => false|(channel:string, sender:string, message:string, client:Norbert,
+    getTriggers():[(word:string, sender:string, channel:string, idx?:number) => false|(channel:string, sender:string, message:string, client:Norbert,
         triggered:string)=>void] {
         throw new Error("This needs to be overriden.");
     }
@@ -43,14 +43,18 @@ export default class SimpleChannelDaemonPlugin extends Plugin {
             return;
         }
 
+        let idx = 0;
+
         words.forEach((word) => {
             for(let matcher:Function of this.getTriggers()) {
-                let parser = matcher.call(this, word, sender, channel);
+                let parser = matcher.call(this, word, sender, channel, idx);
 
                 if(parser !== false) {
                     parser.call(this, channel, sender, message, client, word);
                 }
             }
+
+            ++idx;
         });
     }
 }

@@ -1,7 +1,7 @@
 // @flow
 
 import Norbert from 'lib/Norbert';
- 
+
 export default class Plugin {
     receiverMatches:RegExp;
     hasPlugin:(plugin:string) => boolean;
@@ -19,7 +19,7 @@ export default class Plugin {
     reset(norbert:Norbert) {}
     subscribe(norbert:Norbert) {}
 
-    requirePlugin(...plugins:[string]) {
+    requirePlugin(...plugins:Array<string>) {
         plugins.forEach(plugin => {
             if(!this.hasPlugin(plugin)) {
                 throw new Error(`${plugin} not loaded.`);
@@ -29,7 +29,7 @@ export default class Plugin {
 
     getHelp() : {
         overview: string,
-        commands: {
+        commands?: {
             [K:string]: string
         }
     } {

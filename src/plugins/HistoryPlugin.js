@@ -4,6 +4,8 @@ import Plugin from 'plugins/Plugin';
 import Norbert from 'lib/Norbert';
 
 export default class HistoryPlugin extends Plugin {
+    stmt:Object;
+
     getName() {
         return "History";
     }
@@ -24,6 +26,11 @@ export default class HistoryPlugin extends Plugin {
             "message TEXT, " +
             "timestamp INTEGER" +
             ")");
+
+        this.stmt = norbert.db.prepare("" +
+            "INSERT INTO history " +
+            "(channel, sender, message, timestamp) " +
+            "VALUES (?, ?, ?, ?)");
     }
 
     subscribe(norbert:Norbert) {
@@ -35,18 +42,15 @@ export default class HistoryPlugin extends Plugin {
     }
 
     logMessage(norbert:Norbert, from:string, to:string, message:string) {
-        let stmt = norbert.db.prepare("" +
-            "INSERT INTO history " +
-            "(channel, sender, message, timestamp) " +
-            "VALUES (?, ?, ?, ?)");
-
         let created = new Date().getTime();
 
-        stmt.run([to, from, message, created], err => {
+        this.stmt.run([to, from, message, created], err => {
             if(err) {
                 norbert.client.say(to, "error oh noes");
                 console.error(err);
             }
         })
     }
+
+    
 }

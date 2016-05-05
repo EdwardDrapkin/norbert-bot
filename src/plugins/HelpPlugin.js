@@ -15,7 +15,7 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
         },
         [plugin:string] : {
             overview: string,
-            commands: {
+            commands?: {
                 [K:string]: string
             }
         }

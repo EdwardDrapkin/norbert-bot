@@ -6,8 +6,7 @@ import Norbert from 'lib/Norbert';
 export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
     getHelp() {
         return {
-            overview: "Karma Police, protect this channel.",
-            commands: {}
+            overview: "Karma Police, protect this channel."
         };
     }
 

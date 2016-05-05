@@ -10,6 +10,7 @@ import WolframAlphaPlugin from 'plugins/WolframAlphaPlugin';
 import ReminderPlugin from 'plugins/ReminderPlugin';
 import DiceRollerPlugin from 'plugins/DiceRollerPlugin';
 import HistoryPlugin from 'plugins/HistoryPlugin';
+import SedPlugin from 'plugins/SedPlugin';
 
 let lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -28,15 +29,31 @@ let googlOpts = {
     api_key: 'AIzaSyC-7hr4UZGOnM3E4mPsEpFC6N3ptEYhRr0'
 };
 
-let wolframAlphaOpts= {
-    api_key:'A4EUG7-AQUAL58QGQ'
+let wolframAlphaOpts = {
+    api_key: 'A4EUG7-AQUAL58QGQ'
 };
 
+/*
+ ------------
+ Core plugins
+ ------------
+ Any plugin here is considered 'required' for the bot to function stably.
+ Many other plugins rely on the plugins listed here.  Don't edit this list.
+ */
 let corePlugins = [
     new HelpPlugin(),
     new AutoRejoinPlugin(1000),
     new HistoryPlugin()
 ];
+
+/*
+ -------
+ Plugins
+ -------
+ A list of plugins for the bot.
+
+ For requirePlugin(): they are loaded in the order they're specified here.
+ */
 
 let plugins = [
     new KarmaPolicePlugin(),
@@ -47,6 +64,7 @@ let plugins = [
     new UrlTitlePlugin(2000),
     new KarmaPlugin(),
     new ReminderPlugin(),
+    new SedPlugin(),
     new DiceRollerPlugin()
 ];
 
@@ -61,20 +79,20 @@ export default {
         SSL: false,
         nick: "norbert-beta",
         fullname: "Norbert.The.Bot",
-        channels: "#420"
+        channels: "#420-bots"
     },
-/*
+    /*
 
-server: {
-        hostname: "irc.freenode.net",
-        port: "6667",
-        SSL: false,
-        nick: "norbert-beta",
-        fullname: "Norbert.The.Bot",
-        channels:"##phpbartalk"
+     server: {
+     hostname: "irc.freenode.net",
+     port: "6667",
+     SSL: false,
+     nick: "norbert-beta",
+     fullname: "Norbert.The.Bot",
+     channels:"##phpbartalk"
 
-    },
-*/
+     },
+     */
 
     database: {
         type: "sqlite3",
