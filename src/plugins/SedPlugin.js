@@ -45,7 +45,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
 
         //get recent 5 messages from this channel and try to apply them
         let stmt = norbert.db.prepare("SELECT * FROM history " +
-            "WHERE to=? AND " +
+            "WHERE `to`=? AND " +
             "   ID < (SELECT MAX(ID) FROM history) AND" +
             "   message NOT LIKE 's/%'" +
             "ORDER BY ID DESC LIMIT 5");
