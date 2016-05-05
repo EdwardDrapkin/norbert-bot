@@ -9,6 +9,7 @@ import GooglePlugin from 'plugins/GooglePlugin.js';
 import WolframAlphaPlugin from 'plugins/WolframAlphaPlugin';
 import ReminderPlugin from 'plugins/ReminderPlugin';
 import DiceRollerPlugin from 'plugins/DiceRollerPlugin';
+import HistoryPlugin from 'plugins/HistoryPlugin';
 
 let lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -33,16 +34,17 @@ let wolframAlphaOpts= {
 
 let corePlugins = [
     new HelpPlugin(),
-    new AutoRejoinPlugin(1000)
+    new AutoRejoinPlugin(1000),
+    new HistoryPlugin()
 ];
 
 let plugins = [
+    new KarmaPolicePlugin(),
     new GooglePlugin(googlOpts.api_key),
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),
     new WeatherUndergroundPlugin(weatherOpts.api_key),
     new WolframAlphaPlugin(wolframAlphaOpts.api_key),
     new UrlTitlePlugin(2000),
-    new KarmaPolicePlugin(),
     new KarmaPlugin(),
     new ReminderPlugin(),
     new DiceRollerPlugin()
@@ -53,14 +55,15 @@ export default {
         prefix: "!"
     },
 
-    /*server: {
+    server: {
         hostname: "irc.p2p-network.net",
         port: "6667",
         SSL: false,
         nick: "norbert-beta",
         fullname: "Norbert.The.Bot",
         channels: "#420"
-    },*/
+    },
+/*
 
 server: {
         hostname: "irc.freenode.net",
@@ -71,6 +74,7 @@ server: {
         channels:"##phpbartalk"
 
     },
+*/
 
     database: {
         type: "sqlite3",
