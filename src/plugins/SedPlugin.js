@@ -60,7 +60,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
                 let row = rows[i];
 
                 if(row.message.match(searchExp)) {
-                    let replaced = `${sender} suggests: <${row.sender}> ${row.message.replace(searchExp, replace)}`;
+                    let replaced = `${sender} suggests: <${row.from}> ${row.message.replace(searchExp, replace)}`;
                     norbert.client.say(channel, replaced);
                     break;
                 }
