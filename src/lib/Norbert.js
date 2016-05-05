@@ -81,7 +81,10 @@ export default class Norbert {
         console.info("Startup DB vacuum, this may take a moment.");
         this.db.run("VACUUM");
         console.info("Vacuuming finished.  Thanks for your patience!");
-        this.db.run("PRAGMA auto_vacuum = 2;");
+        this.db.run("PRAGMA auto_vacuum = 1;"); // FULL auto vacuum because we VACUUM on start
+        this.db.run("PRAGMA cache_size = -8096;"); //default size is 2000kB, let's increase that
+        this.db.run("PRAGMA journal_mode = TRUNCATE;"); //default size is DELETE, docs say this should be faster
+        this.db.run("PRAGMA threads = 2;"); //allow up to 2 worker threads instead of the usual 0
 
     }
 
