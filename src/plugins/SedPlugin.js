@@ -43,6 +43,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
         let searchExp;
 
         try {
+            // $FlowIgnore
             searchExp = new RegExp(search, flags);
         } catch(e) {
             try {
