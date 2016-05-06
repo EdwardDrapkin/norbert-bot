@@ -31,7 +31,11 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         let humanSize = '';
         let image = {};
 
-        request({method: 'HEAD', uri: triggered}, (error, headResponse, headBody) => {
+        request({method: 'HEAD', uri: triggered}, (err, headResponse, headBody) => {
+            if(err) {
+                return;
+            }
+
             contentType = headResponse.headers['content-type'];
             size = headResponse.headers['content-length'] || 0;
             humanSize = filesize(size);
