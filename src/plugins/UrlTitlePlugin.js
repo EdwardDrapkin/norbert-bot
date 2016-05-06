@@ -6,6 +6,7 @@ import request from 'request';
 import cheerio from 'cheerio';
 import filesize from 'filesize';
 import imageSize from 'image-size';
+import url from 'url';
 
 export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     timeout:Number;
@@ -30,7 +31,11 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         let humanSize = '';
         let image = {};
 
-        request({method: 'HEAD', uri: triggered}, (err, headResponse, headBody) => {
+        if(!triggered.startsWith('http://')) {
+            triggered = `http://${triggered}`;
+        }
+
+        request({method: 'HEAD', uri: url.parse(triggered)}, (err, headResponse, headBody) => {
             if(err) {
                 return;
             }
