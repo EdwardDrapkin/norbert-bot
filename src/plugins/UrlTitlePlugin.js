@@ -2,7 +2,7 @@
 
 import SimpleChanDaemonPlugin from 'plugins/SimpleChanDaemonPlugin';
 import Norbert from 'lib/Norbert';
-import MetaInspector from 'node-metainspector';
+import scrape from 'html-metadata';
 
 export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     timeout:Number;
@@ -22,18 +22,12 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         return word.match(/[^\b]+\.[a-z]{2,6}/i) != null ? this.getUrlTitle : false;
     }
 
-    getUrlTitle(channel:string, sender:string, message:string, client:Norbert, triggered:string) {
-        let inspector = new MetaInspector(triggered, {timeout: this.timeout});
-
-        inspector.on("fetch", function() {
-            if(inspector.title.trim() != "") {
-                client.client.say(channel, `<${sender}> ${inspector.title.trim()}`)
+    getUrlTitle(channel:string, sender:string, message:string, norbert:Norbert, triggered:string) {
+        scrape(triggered, (err, results) => {
+            if(!err && results.hasOwnProperty('general') && results.general.hasOwnProperty('title')) {
+                norbert.client.say(channel, `<${sender}> ${results.general.title.trim()}`)
             }
         });
-
-        inspector.on("error", () => {});
-
-        inspector.fetch();
     }
 
     getHelp() {
