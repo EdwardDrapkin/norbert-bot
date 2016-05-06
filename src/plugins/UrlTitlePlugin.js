@@ -10,9 +10,8 @@ import imageSize from 'image-size';
 export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     timeout:Number;
 
-    constructor(timeout:Number) {
+    constructor() {
         super();
-        this.timeout = timeout;
     }
 
     getTriggers() :[ (word:string, sender:string, channel:string) => false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void] {
