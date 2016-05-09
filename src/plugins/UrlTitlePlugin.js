@@ -46,7 +46,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
             this.imgurGifVHandler.bind(this),
             this.imageHandler.bind(this),
             this.videoHandler.bind(this),
-            this.fallbackTextHandler.bind(this)
+            this.titleTagHandler.bind(this)
         ]
     }
 
@@ -112,7 +112,8 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
                                 }
                             }
                         } catch(e) {}
-                        announce(`video/mp4: ${res[0].duration}, ${dimensions}, ${res[0].file_size}`);                    }).catch(err => {
+                        announce(`video/mp4: ${res[0].duration}, ${dimensions}, ${res[0].file_size}`);
+                    }).catch(err => {
                         console.error(err);
                     });
                 }).pipe(fs.createWriteStream(tempPath.path));
@@ -152,7 +153,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         return false;
     }
 
-    fallbackTextHandler(str:string, resp:http.IncomingMessage, body:string, announce:(msg:string)=>void):boolean {
+    titleTagHandler(str:string, resp:http.IncomingMessage, body:string, announce:(msg:string)=>void):boolean {
         if(resp.headers['content-type'].startsWith('text/')) {
             request(str, (error, resp, _body) => {
                 if(!error) {

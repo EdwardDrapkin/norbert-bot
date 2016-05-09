@@ -9,7 +9,9 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
         return {
             overview: "the best reminder plugin you will find anywhere on IRC.",
             commands: {
-                remind: "[person] [text] - create a reminder for person, natural language text!"
+                remind: "[person] [text] - create a reminder for person, natural language text!",
+                tell: "same thing as remind, because some of you need synonyms.",
+                myReminders: "ask for your pending sent reminders."
             }
         };
     }
@@ -48,8 +50,30 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
 
     getCommands() {
         return {
-            remind: this.createReminder.bind(this)
+            tell: this.createReminder.bind(this),
+            remind: this.createReminder.bind(this),
+            myReminders: this.whatAreMyReminders.bind(this)
         }
+    }
+
+    whatAreMyReminders(channel:string, sender:string, message:string, norbert:Norbert) {
+        let stmt = norbert.db.prepare("SELECT  * FROM reminders WHERE from_who = ?");
+
+        stmt.all([sender], (err, rows) => {
+            if(rows.length == 0) {
+                norbert.client.say(channel, `${sender}, you have no pending sent messages.`);
+            } else {
+                norbert.client.say(channel,
+                    `${sender}, you have ${rows.length} pending messages.  Sending your more intimate details in PM.`);
+                for(let i = 0; i < rows.length; i++) {
+                    let row = rows[i];
+                    norbert.client.say(sender, `MESSAGE #${i+1} of ${rows.length}: to: ${row.to_who}, channel ${row.channel}, ` +
+                        `will remind ${this._remindAfterString(row.remind_after)}`);
+                    norbert.client.say(sender, `MESSAGE #${i+1} of ${rows.length}: ${row.reminder}`);
+                }
+            }
+        })
+
     }
 
     detectReminders(channel:string, sender:string, message:string, norbert:Norbert) {
@@ -74,9 +98,14 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
         });
     }
 
+    _remindAfterString(remindAfter) {
+        return remindAfter > 0 ? `after ${new Date(remindAfter).toLocaleDateString('en-US',
+            {hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short'})}` : "ASAP";
+    }
 
     createReminder(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt = norbert.db.prepare("INSERT INTO reminders (from_who, channel, to_who, remind_after, reminder, created) " +
+        let stmt = norbert.db.prepare(
+            "INSERT INTO reminders (from_who, channel, to_who, remind_after, reminder, created) " +
             "VALUES (?, ?, ?, ?, ?, ?)");
 
         let parsed = this.parseReminderString(message);
@@ -85,10 +114,13 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
         let remindAfter = parsed.remindAfter;
         let reminder = parsed.reminder;
         let created = new Date().getTime();
+        let human = this._remindAfterString(parsed.remindAfter);
 
         stmt.run([fromWho, channel, toWho, remindAfter, reminder, created], err => {
             if(err) {
                 norbert.client.say(channel, "error oh noes");
+            } else {
+                norbert.client.say(channel, `Okay, ${sender}, I will remind ${toWho} in ${channel} ${human}`);
             }
         });
     }
