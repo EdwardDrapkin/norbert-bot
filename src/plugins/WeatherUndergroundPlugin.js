@@ -21,6 +21,7 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
             overview: "Weather Underground Plugin",
             commands: {
                 weather : "Gets the weather, shocking!",
+                w : "Gets the weather with less keystrokes",
                 setWeather : "Sets your weather location"
             }
         }
@@ -29,6 +30,7 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     getCommands() {
         return {
             weather: this.getWeather.bind(this),
+            w: this.getWeather.bind(this),
             setWeather: this.saveUser.bind(this)
         }
 
