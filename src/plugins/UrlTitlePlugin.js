@@ -95,7 +95,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
 
     videoHandler(str:string, resp:http.IncomingMessage, body:string, announce:(msg:string)=>void):boolean {
         if(resp.headers['content-type'].startsWith('video/')) {
-            let tmp = str.replace(/[\W]/ig, '_');
+            const tmp = str.replace(/[\W]/ig, '_');
 
             temp.open(tmp, (err, tempPath) => {
                 _request.get(str).on('end', () => {
@@ -103,10 +103,10 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
                         let dimensions = '';
                         try {
                             for(let i = 0; i < res[0].tracks.length; i++) {
-                                let track = res[0].tracks[i];
+                                const track = res[0].tracks[i];
                                 if(track.type == 'Video') {
-                                    let height = res[0].tracks[0].height.replace(' pixels', '');
-                                    let width = res[0].tracks[0].width.replace(' pixels', '');
+                                    const height = res[0].tracks[0].height.replace(' pixels', '');
+                                    const width = res[0].tracks[0].width.replace(' pixels', '');
                                     dimensions = `${height}x${width}`;
                                     break;
                                 }
@@ -138,10 +138,10 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         if(resp.headers['content-type'].startsWith('image/')) {
             request(str, (error, resp, _body) => {
                 if(!error) {
-                    let image = imageSize(resp.buffer);
-                    let humanSize = resp.headers['content-length'] > 0 ?
+                    const image = imageSize(resp.buffer);
+                    const humanSize = resp.headers['content-length'] > 0 ?
                                     filesize(resp.headers['content-length']) : '';
-                    let message = `${image.height}x${image.width} ${image.type} - ${humanSize}`;
+                    const message = `${image.height}x${image.width} ${image.type} - ${humanSize}`;
 
                     announce(message);
                 }
@@ -157,7 +157,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         if(resp.headers['content-type'].startsWith('text/')) {
             request(str, (error, resp, _body) => {
                 if(!error) {
-                    let title = cheerio.load(_body)('title').text().trim();
+                    const title = cheerio.load(_body)('title').text().trim();
                     if(title != "") {
                         announce(title);
                     }

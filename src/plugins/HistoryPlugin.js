@@ -45,7 +45,7 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
     }
 
     findInHistory(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt =
+        const stmt =
             norbert.db.prepare("SELECT * FROM history WHERE `from` = ? ORDER BY ID DESC LIMIT 1");
 
         stmt.all([message], (err, rows) => {
@@ -65,7 +65,7 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
     }
 
     createMessageFromRow(row : {to:string, from:string, message: string, timestamp: number, event:string}){
-        let humanDate = new Date(row.timestamp).toLocaleDateString('en-US',
+        const humanDate = new Date(row.timestamp).toLocaleDateString('en-US',
             {hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short'});
 
         switch(row.event) {

@@ -38,7 +38,7 @@ export default class WolframAlphaPlugin extends SimpleChanMsgPlugin {
                 console.log(err)
             }
 
-            for(let result of results) {
+            for(const result of results) {
                 if(result.hasOwnProperty('title') && result.title == 'Result'
                     && result.hasOwnProperty('subpods') &&
                         result.subpods.length > 0

@@ -29,13 +29,13 @@ export default class SimpleChanMsgPlugin extends Plugin {
         if(channels.length == 0) {
             return /#.*/;
         } else {
-            let pattern = "#(" + channels.join(")|(") + ")";
+            const pattern = "#(" + channels.join(")|(") + ")";
             return new RegExp(pattern);
         }
     }
 
     _getCommands() {
-        let temp = {};
+        const temp = {};
 
         Object.keys(this.getCommands()).forEach(key => {
             temp[key.toLowerCase()] = this.getCommands()[key]
@@ -59,7 +59,7 @@ export default class SimpleChanMsgPlugin extends Plugin {
     }
 
     processChanMsg(channel:string, sender:string, message:string, norbert:Norbert) {
-        let words = message.split(/\s+/);
+        const words = message.split(/\s+/);
 
         if(words.length == 0) {
             //not sure how this happened

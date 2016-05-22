@@ -55,7 +55,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
     }
 
     lookupUser(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt = norbert.db.prepare("SELECT * FROM lastfm WHERE name=(?)");
+        const stmt = norbert.db.prepare("SELECT * FROM lastfm WHERE name=(?)");
         stmt.all([sender], (err, rows) => {
             if(rows.length > 0) {
                 norbert.client.say(channel, `${sender}, I know you as ${rows[0].lastfm}`);
@@ -66,10 +66,10 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
     }
 
     saveUser(channel:string, sender:string, message:string, norbert:Norbert) {
-        let user = sender;
-        let lastFm = message;
+        const user = sender;
+        const lastFm = message;
 
-        let stmt = norbert.db.prepare("INSERT OR REPLACE INTO lastfm (name, lastfm) VALUES (?, ?)");
+        const stmt = norbert.db.prepare("INSERT OR REPLACE INTO lastfm (name, lastfm) VALUES (?, ?)");
         stmt.run([user, lastFm], (err) => {
             if(err) {
                 norbert.client.say(channel, "error oh noes");
@@ -81,7 +81,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
 
     nowPlaying(channel:string, sender:string, message:string, norbert:Norbert) {
         let user;
-        let client = norbert.client;
+        const client = norbert.client;
 
         if(message.trim() != "") {
             user = message.split(/\s+/)[0];
@@ -89,7 +89,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
             user = sender;
         }
 
-        let stmt = norbert.db.prepare("SELECT * FROM lastfm WHERE name=(?)");
+        const stmt = norbert.db.prepare("SELECT * FROM lastfm WHERE name=(?)");
         stmt.all([user], (err, rows) => {
 
             let lastFmName = "";
@@ -110,7 +110,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
                     recent.track[0]['@attr'].hasOwnProperty('nowplaying') &&
                     recent.track[0]['@attr']['nowplaying'] == 'true'
                 ) {
-                    let meta = this.gatherMetaData(recent.track[0]);
+                    const meta = this.gatherMetaData(recent.track[0]);
                     meta.user = lastFmName;
                     info = this.processTemplate(this.templates.np, meta);
                 } else {
@@ -123,14 +123,14 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
     }
 
     gatherMetaData(track:Object) : {[K:string]:string} {
-        let artist = track.hasOwnProperty('artist') &&
+        const artist = track.hasOwnProperty('artist') &&
             track['artist'].hasOwnProperty('#text') ?
             track['artist']['#text'] : '';
-        let title = track.hasOwnProperty('name') ? track['name'] : '';
-        let album = track.hasOwnProperty('album') &&
+        const title = track.hasOwnProperty('name') ? track['name'] : '';
+        const album = track.hasOwnProperty('album') &&
             track['album'].hasOwnProperty('#text') ?
             track['album']['#text'] : '';
-        let date = track.hasOwnProperty('date') &&
+        const date = track.hasOwnProperty('date') &&
             track['date'].hasOwnProperty('#uts') ?
             (new Date(track['date']['uts'] * 1000)).toDateString() : '';
 
@@ -138,7 +138,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
     }
 
     processTemplate(template:string , meta:{[K:string]:string}) {
-        for(let key in meta) {
+        for(const key in meta) {
             template = template.replace(new RegExp(`%${key}%`, 'g'), meta[key]);
         }
 

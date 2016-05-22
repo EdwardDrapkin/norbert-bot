@@ -64,7 +64,7 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
     }
 
     whatAreMyReminders(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt = norbert.db.prepare("SELECT  * FROM reminders WHERE from_who = ?");
+        const stmt = norbert.db.prepare("SELECT  * FROM reminders WHERE from_who = ?");
 
         stmt.all([sender], (err, rows) => {
             if(rows.length == 0) {
@@ -73,7 +73,7 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
                 norbert.client.say(channel,
                     `${sender}, you have ${rows.length} pending messages.  Sending your more intimate details in PM.`);
                 for(let i = 0; i < rows.length; i++) {
-                    let row = rows[i];
+                    const row = rows[i];
                     norbert.client.say(sender, `MESSAGE #${i+1} of ${rows.length}: to: ${row.to_who}, channel ${row.channel}, ` +
                         `will remind ${this._remindAfterString(row.remind_after)}`);
                     norbert.client.say(sender, `MESSAGE #${i+1} of ${rows.length}: ${row.reminder}`);
@@ -84,19 +84,19 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
     }
 
     detectReminders(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt = norbert.db.prepare("SELECT ID, from_who, to_who, reminder, created FROM reminders " +
+        const stmt = norbert.db.prepare("SELECT ID, from_who, to_who, reminder, created FROM reminders " +
             "WHERE to_who=? AND channel=? AND remind_after < ?");
 
-        let deleteStmt = norbert.db.prepare("DELETE FROM reminders WHERE ID=?");
+        const deleteStmt = norbert.db.prepare("DELETE FROM reminders WHERE ID=?");
 
         stmt.all([sender.toLowerCase(), channel, new Date().getTime()], (err, rows) => {
-            for(let row of rows) {
-                let who = row.from_who;
-                let reminder = row.reminder;
-                let created = new Date(row.created).toLocaleDateString('en-US',
+            for(const row of rows) {
+                const who = row.from_who;
+                const reminder = row.reminder;
+                const created = new Date(row.created).toLocaleDateString('en-US',
                     {hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short'});
 
-                let msg = `${sender}, you have a message! [${created}] <${who}> ${reminder}`;
+                const msg = `${sender}, you have a message! [${created}] <${who}> ${reminder}`;
 
                 norbert.client.say(channel, msg);
 
@@ -111,19 +111,19 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
     }
 
     createReminder(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt = norbert.db.prepare(
+        const stmt = norbert.db.prepare(
             "INSERT INTO reminders (from_who, channel, to_who, remind_after, reminder, created) " +
             "VALUES (?, ?, ?, ?, ?, ?)");
 
         this.reminder.sendMessage(`remind ${message}`, (err, data) => {
             if(!err && data.parsed){
-                let parsed = data.parsed;
-                let fromWho = sender.toLowerCase();
-                let toWho = parsed.who.toLowerCase() == 'me' ? sender : parsed.who.toLowerCase();
-                let remindAfter = parsed.when;
-                let reminder = parsed.what;
-                let created = new Date().getTime();
-                let human = this._remindAfterString(parsed.when);
+                const parsed = data.parsed;
+                const fromWho = sender.toLowerCase();
+                const toWho = parsed.who.toLowerCase() == 'me' ? sender : parsed.who.toLowerCase();
+                const remindAfter = parsed.when;
+                const reminder = parsed.what;
+                const created = new Date().getTime();
+                const human = this._remindAfterString(parsed.when);
 
                 stmt.run([fromWho, channel, toWho, remindAfter, reminder, created], err => {
                     if(err) {

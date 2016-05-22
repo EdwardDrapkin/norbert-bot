@@ -30,8 +30,8 @@ export default class Norbert {
         this.setupDatabase();
         this.setupClient();
 
-        let plugins:[Plugin] = config.get('plugins');
-        let pjson = require('../../package.json');
+        const plugins:[Plugin] = config.get('plugins');
+        const pjson = require('../../package.json');
 
         this.loaded = {};
 
@@ -45,7 +45,7 @@ export default class Norbert {
             name: pjson.name
         };
 
-        for(let plugin of plugins) {
+        for(const plugin of plugins) {
             this.loadPlugin(plugin);
         }
     }
@@ -58,9 +58,9 @@ export default class Norbert {
     }
 
     setupClient() {
-        let server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
+        const server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
 
-        let temp = new irc.Client(server.hostname, server.nick, {
+        const temp = new irc.Client(server.hostname, server.nick, {
             realName: server.fullname,
             debug: true,
             channels: server.channels.split(',').map(e=>e.trim())
@@ -82,15 +82,15 @@ export default class Norbert {
         this.db.run("VACUUM");
         console.info("Vacuuming finished.  Thanks for your patience!");
         this.db.run("PRAGMA auto_vacuum = 1;"); // FULL auto vacuum because we VACUUM on start
-        this.db.run("PRAGMA cache_size = -8096;"); //default size is 2000kB, let's increase that
-        this.db.run("PRAGMA journal_mode = TRUNCATE;"); //default size is DELETE, docs say this should be faster
+        this.db.run("PRAGMA cache_size = -8096;"); //default size is 2000kB, const's increase that
+        this.db.run("PRAGMA journal_mode = TRUNCATE;"); //default size is DEconstE, docs say this should be faster
         this.db.run("PRAGMA threads = 2;"); //allow up to 2 worker threads instead of the usual 0
 
     }
 
     addHelpData(plugin:Plugin) {
-        let name = plugin.getName();
-        let help = plugin.getHelp();
+        const name = plugin.getName();
+        const help = plugin.getHelp();
 
         //this is ugly but it allows convenience for plugin devs
         if(!help.hasOwnProperty('commands')) {

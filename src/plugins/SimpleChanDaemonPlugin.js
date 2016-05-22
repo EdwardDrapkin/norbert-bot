@@ -22,7 +22,7 @@ export default class SimpleChannelDaemonPlugin extends Plugin {
         if(channels.length == 0) {
             return /#.*/;
         } else {
-            let pattern = "#(" + channels.join(")|(") + ")";
+            const pattern = "#(" + channels.join(")|(") + ")";
             return new RegExp(pattern);
         }
     }
@@ -36,7 +36,7 @@ export default class SimpleChannelDaemonPlugin extends Plugin {
     }
 
     processChanMsg(channel:string, sender:string, message:string, client:Norbert) {
-        let words = message.split(/\s+/);
+        const words = message.split(/\s+/);
 
         if(words.length == 0) {
             //not sure how this happened
@@ -46,8 +46,8 @@ export default class SimpleChannelDaemonPlugin extends Plugin {
         let idx = 0;
 
         words.forEach((word) => {
-            for(let matcher:Function of this.getTriggers()) {
-                let parser = matcher.call(this, word, sender, channel, idx);
+            for(const matcher:Function of this.getTriggers()) {
+                const parser = matcher.call(this, word, sender, channel, idx);
 
                 if(parser !== false) {
                     parser.call(this, channel, sender, message, client, word);

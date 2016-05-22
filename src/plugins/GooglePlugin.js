@@ -43,16 +43,16 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
                 return;
             }
 
-            let links = [];
+            const links = [];
 
-            for(let link of results.links) {
+            for(const link of results.links) {
                 if(link.href != null && link.title != null && count < numResults) {
                     links.unshift(link);
                     count++;
                 }
             }
 
-            let ress = [];
+            const ress = [];
             googl.shorten(results.url)
                 .then((shortened) => {
                     ress.push(`Google Search results for "${results.query}" - ${shortened}`);
@@ -63,17 +63,17 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
 
     shorten(links:[{title:string,href:string}], results:[string], num:number, channel:string, sender:string, message:string, norbert:Norbert) {
         if(links.length > 0) {
-            let link = links.pop();
+            const link = links.pop();
 
             googl.shorten(link.href)
                 .then((shortened) => {
-                    let title = this.shortenPhrase(link.title);
+                    const title = this.shortenPhrase(link.title);
                     results.push(` - (${++num}) ${title} <${shortened}>`);
                     this.shorten(links, results, num, channel, sender, message, norbert);
                 });
         } else {
             if(results.length > 2) {
-                for(let msg of results) {
+                for(const msg of results) {
                     norbert.client.say(channel, msg);
                 }
             } else {
@@ -85,7 +85,7 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
     }
 
     shortenPhrase(phrase:string) {
-        let words = phrase.split(/\s+/);
+        const words = phrase.split(/\s+/);
         if(words.length > 8) {
             return `${words[0]} ${words[1]} ${words[2]}...`
         } else {

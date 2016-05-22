@@ -32,13 +32,13 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
     }
 
     handleReplaceMessage(channel:string, sender:string, message:string, norbert:Norbert, triggered:string) {
-        let parsed = this.parseSed(message);
+        const parsed = this.parseSed(message);
 
         if(parsed === false) {
             return;
         }
 
-        let {search, replace, flags} = parsed;
+        const {search, replace, flags} = parsed;
 
         let searchExp;
 
@@ -54,7 +54,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
         }
 
         //get recent 5 messages from this channel and try to apply them
-        let stmt = norbert.db.prepare("SELECT * FROM history " +
+        const stmt = norbert.db.prepare("SELECT * FROM history " +
             "WHERE `to`=? AND " +
             "   ID < (SELECT MAX(ID) FROM history) AND" +
             "   message NOT LIKE 's/%'" +
@@ -67,10 +67,10 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
             }
 
             for(let i = 0; i < rows.length; i++) {
-                let row = rows[i];
+                const row = rows[i];
 
                 if(row.message.match(searchExp)) {
-                    let replaced = `${sender} suggests: <${row.from}> ${row.message.replace(searchExp, replace)}`;
+                    const replaced = `${sender} suggests: <${row.from}> ${row.message.replace(searchExp, replace)}`;
                     norbert.client.say(channel, replaced);
                     break;
                 }
@@ -90,7 +90,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
 
         //i = 2 because of the s/
         for(let i = 2; i < str.length; i++) {
-            let chr = str[i];
+            const chr = str[i];
 
             if((chr == '/' && str[i - 1] != "\\") ||
                 (chr == '/' && str[i - 1] == "\\" && str[i - 2] == "\\")

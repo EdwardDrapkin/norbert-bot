@@ -44,7 +44,7 @@ export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
     incrementKarma(channel:string, sender:string, message:string, norbert:Norbert, triggered:string) {
         triggered = triggered.replace(/[\+\-]+/, '');
 
-        let stmt = norbert.db.prepare("INSERT OR REPLACE INTO karma (name, channel, score) " +
+        const stmt = norbert.db.prepare("INSERT OR REPLACE INTO karma (name, channel, score) " +
             "VALUES (?, ?, COALESCE((SELECT score from karma WHERE name=? and channel=?),0) + 1)");
 
         stmt.run([triggered, channel, triggered, channel], err => {
@@ -57,7 +57,7 @@ export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
     decrementKarma(channel:string, sender:string, message:string, norbert:Norbert, triggered:string) {
         triggered = triggered.replace(/[\+\-]+/, '');
 
-        let stmt = norbert.db.prepare("INSERT OR REPLACE INTO karma (name, channel, score) " +
+        const stmt = norbert.db.prepare("INSERT OR REPLACE INTO karma (name, channel, score) " +
             "VALUES (?, ?, COALESCE((SELECT score from karma WHERE name=? and channel=?),0) - 1)");
 
         stmt.run([triggered, channel, triggered, channel], err => {

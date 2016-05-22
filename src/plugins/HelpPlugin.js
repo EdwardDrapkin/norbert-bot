@@ -43,7 +43,7 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
     }
 
     specificCommandHelp(channel:string, sender:string, message:string, norbert:Norbert) {
-        let command = message.trim();
+        const command = message.trim();
 
         if(!command) {
             return this.help(channel,sender,message,norbert);
@@ -54,7 +54,7 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
             return;
         }
 
-        let msg = `${this.meta.prefix}${command}: ${this.helpData['__commands'][command]}`;
+        const msg = `${this.meta.prefix}${command}: ${this.helpData['__commands'][command]}`;
         norbert.client.say(channel, msg);
     }
 
@@ -70,20 +70,20 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
 
 
     plugins(channel:string, sender:string, message:string, norbert:Norbert) {
-        let _plugins = {};
+        const _plugins = {};
         Object.assign(_plugins, this.helpData);
         delete _plugins['__commands'];
 
-        let pluginsN = Object.keys(_plugins).length;
-        let pluginsS = Object.keys(_plugins).join(', ');
+        const pluginsN = Object.keys(_plugins).length;
+        const pluginsS = Object.keys(_plugins).join(', ');
 
-        let msg = `${pluginsN} available: (${pluginsS}). For more information use the ${this.meta.prefix}plugin command.`
+        const msg = `${pluginsN} available: (${pluginsS}). For more information use the ${this.meta.prefix}plugin command.`
         norbert.client.say(channel, msg);
 
     }
 
     plugin(channel:string, sender:string, message:string, norbert:Norbert) {
-        let _plugins = {};
+        const _plugins = {};
         Object.assign(_plugins, this.helpData);
         delete _plugins['__commands'];
 
@@ -92,28 +92,28 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
             return;
         }
 
-        let pluginsN = Object.keys(_plugins).length;
-        let plugin = _plugins[message.trim()].overview;
+        const pluginsN = Object.keys(_plugins).length;
+        const plugin = _plugins[message.trim()].overview;
 
-        let msg = `${message.trim()} - ${plugin}`;
+        const msg = `${message.trim()} - ${plugin}`;
         norbert.client.say(channel, msg);
 
     }
 
     commands(channel:string, sender:string, message:string, norbert:Norbert) {
 
-        let commandsN = Object.keys(this.helpData['__commands']).length;
-        let commandsS = Object.keys(this.helpData['__commands']).join(', ');
+        const commandsN = Object.keys(this.helpData['__commands']).length;
+        const commandsS = Object.keys(this.helpData['__commands']).join(', ');
 
-        let msg = `${commandsN} available: (${commandsS}). For more information use ${this.meta.prefix}help command.`
+        const msg = `${commandsN} available: (${commandsS}). For more information use ${this.meta.prefix}help command.`
         norbert.client.say(channel, msg);
     }
 
     help(channel:string, sender:string, message:string, norbert:Norbert) {
-        let pluginN = Object.keys(this.helpData).length - 1;
-        let commandsN = Object.keys(this.helpData['__commands']).length;
+        const pluginN = Object.keys(this.helpData).length - 1;
+        const commandsN = Object.keys(this.helpData['__commands']).length;
 
-        let msg = `Hello! Currently running version ${this.meta.version} of ${this.meta.name} with ${pluginN} plugins loaded for a total`
+        const msg = `Hello! Currently running version ${this.meta.version} of ${this.meta.name} with ${pluginN} plugins loaded for a total`
             + ` of ${commandsN} commands.  Please ${this.meta.prefix}plugins or ${this.meta.prefix}commands for more information.`;
 
         norbert.client.say(channel, msg);

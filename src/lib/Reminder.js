@@ -31,7 +31,7 @@ export default class Reminder {
 
     sendMessage(message:string, callback: (error:Object, data:dataT)=>void) {
         this.client.message(message, {}, (e, data) => {
-            let output:dataT = {
+            const output:dataT = {
                 input: data._text
             };
 

@@ -29,10 +29,10 @@ export default class KarmaPlugin extends SimpleChanMsgPlugin {
     }
 
     checkKarma(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt = norbert.db.prepare("SELECT score FROM karma WHERE name=? AND channel=?");
+        const stmt = norbert.db.prepare("SELECT score FROM karma WHERE name=? AND channel=?");
         stmt.all([message, channel], (err, rows) => {
             if(rows.length > 0) {
-                let score = rows[0].score;
+                const score = rows[0].score;
 
                 if(score == 0) {
                     norbert.client.say(channel, `What kind of weirdo is ${message} with perfectly neutral karma?`);

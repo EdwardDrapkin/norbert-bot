@@ -26,10 +26,10 @@ export default class AutoRejoinPlugin extends Plugin {
 
     subscribe(norbert:Norbert) {
         norbert.client.on('KICK', (data) => {
-            let channel = data.receiver;
-            let kicker = data.snder;
-            let kicked = data.message[0];
-            let kickMsg = data.message[1];
+            const channel = data.receiver;
+            const kicker = data.snder;
+            const kicked = data.message[0];
+            const kickMsg = data.message[1];
 
             if(kicked == norbert.client.nickname) {
                 setTimeout(() => {

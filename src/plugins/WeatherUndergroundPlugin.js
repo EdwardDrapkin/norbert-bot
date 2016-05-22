@@ -46,10 +46,10 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     saveUser(channel:string, sender:string, message:string, norbert:Norbert) {
-        let user = sender;
-        let weather = message;
+        const user = sender;
+        const weather = message;
 
-        let stmt = norbert.db.prepare("INSERT OR REPLACE INTO weather (name, weather) VALUES (?, ?)");
+        const stmt = norbert.db.prepare("INSERT OR REPLACE INTO weather (name, weather) VALUES (?, ?)");
         stmt.run([user, weather], (err) => {
             if(err) {
                 norbert.client.say(channel, "error oh noes");
@@ -60,10 +60,10 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     lookupUser(channel:string, sender:string, message:string, norbert:Norbert) {
-        let stmt = norbert.db.prepare("SELECT * FROM weather WHERE name=(?)");
+        const stmt = norbert.db.prepare("SELECT * FROM weather WHERE name=(?)");
         stmt.all([sender], (err, rows) => {
             if(rows.length > 0) {
-                let weather = rows[0].weather;
+                const weather = rows[0].weather;
                 return this.getWeather(channel, sender, weather, norbert);
             } else {
                 norbert.client.say(channel, `${sender}, I don't have any weather location saved for you.`);
@@ -100,14 +100,14 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
             return false;
         }
 
-        let location = data.observation_location.full;
-        let temp = data.temperature_string;
-        let observation = data.observation_time;
-        let weather = data.weather;
-        let humidity = data.relative_humidity;
-        let wind = data.wind_string.replace('From', 'from');
-        let feelsLike = data.feelslike_string;
-        let url = data.forecast_url;
+        const location = data.observation_location.full;
+        const temp = data.temperature_string;
+        const observation = data.observation_time;
+        const weather = data.weather;
+        const humidity = data.relative_humidity;
+        const wind = data.wind_string.replace('From', 'from');
+        const feelsLike = data.feelslike_string;
+        const url = data.forecast_url;
 
         return `Current conditions: ${weather} / ${temp} [feels like ${feelsLike}] `
             + ` / ${humidity} humidity / Wind ${wind} / ${observation} at ${location}`
