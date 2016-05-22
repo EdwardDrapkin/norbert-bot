@@ -12,7 +12,7 @@ import DiceRollerPlugin from 'plugins/DiceRollerPlugin';
 import HistoryPlugin from 'plugins/HistoryPlugin';
 import SedPlugin from 'plugins/SedPlugin';
 
-let lastFmOpts = {
+const lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
     secret: 'a62a330dc620c528440cf9e4c6a30261',
     templates: {
@@ -21,19 +21,19 @@ let lastFmOpts = {
     }
 };
 
-let weatherOpts = {
+const weatherOpts = {
     api_key: '0347d23efc0576af'
 };
 
-let googlOpts = {
+const googlOpts = {
     api_key: 'AIzaSyC-7hr4UZGOnM3E4mPsEpFC6N3ptEYhRr0'
 };
 
-let wolframAlphaOpts = {
+const wolframAlphaOpts = {
     api_key: 'A4EUG7-AQUAL58QGQ'
 };
 
-let witOpts = {
+const witOpts = {
     oauth_key: 'DSK325PVHGMLJSCW2IK5DNZ4LSNFWG5H'
 };
 
@@ -44,7 +44,7 @@ let witOpts = {
  Any plugin here is considered 'required' for the bot to function stably.
  Many other plugins rely on the plugins listed here.  Don't edit this list.
  */
-let corePlugins = [
+const corePlugins = [
     new HelpPlugin(),
     new AutoRejoinPlugin(1000),
     new HistoryPlugin()
@@ -59,7 +59,7 @@ let corePlugins = [
  For requirePlugin(): they are loaded in the order they're specified here.
  */
 
-let userPlugins = [
+const userPlugins = [
     new KarmaPolicePlugin(),
     new GooglePlugin(googlOpts.api_key),
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),

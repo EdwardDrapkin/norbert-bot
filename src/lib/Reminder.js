@@ -1,6 +1,15 @@
 // @flow
 import {Wit} from 'node-wit';
 
+type dataT ={
+    input:string,
+    parsed?:{
+        who:string,
+        what:string,
+        when:Date
+    }
+};
+
 export default class Reminder {
     client:Wit;
 
@@ -8,21 +17,21 @@ export default class Reminder {
         this.client = new Wit(token, this);
     }
 
-    say(sessionId, context, message, cb) {
+    say(sessionId:string, context:Object, message:string, cb:Function) {
         cb();
     }
 
-    merge(sessionId, context, entities, message, cb) {
+    merge(sessionId:string, context:Object, message:string, cb:Function) {
         cb(context);
     }
 
-    error(sessionId, context, error) {
+    error(sessionId:string, context:Object, error:Error) {
         console.log(error.message);
     }
 
-    sendMessage(message, callback) {
+    sendMessage(message:string, callback: (error:Object, data:dataT)=>void) {
         this.client.message(message, {}, (e, data) => {
-            let output = {
+            let output:dataT = {
                 input: data._text
             };
 

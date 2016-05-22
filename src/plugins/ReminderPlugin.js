@@ -105,7 +105,7 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
         });
     }
 
-    _remindAfterString(remindAfter) {
+    _remindAfterString(remindAfter:number) {
         return remindAfter > 0 ? `after ${new Date(remindAfter).toLocaleDateString('en-US',
             {hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short'})}` : "ASAP";
     }
@@ -116,7 +116,7 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
             "VALUES (?, ?, ?, ?, ?, ?)");
 
         this.reminder.sendMessage(`remind ${message}`, (err, data) => {
-            if(!err){
+            if(!err && data.parsed){
                 let parsed = data.parsed;
                 let fromWho = sender.toLowerCase();
                 let toWho = parsed.who.toLowerCase() == 'me' ? sender : parsed.who.toLowerCase();
@@ -134,58 +134,5 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
                 });
             }
         });
-/*
-        let parsed = this.parseReminderString(message);
-        let fromWho = sender.toLowerCase();
-        let toWho = parsed.who.toLowerCase() == 'me' ? sender : parsed.who.toLowerCase();
-        let remindAfter = parsed.remindAfter;
-        let reminder = parsed.reminder;
-        let created = new Date().getTime();
-        let human = this._remindAfterString(parsed.remindAfter);
-
-        stmt.run([fromWho, channel, toWho, remindAfter, reminder, created], err => {
-            if(err) {
-                norbert.client.say(channel, "error oh noes");
-            } else {
-                norbert.client.say(channel, `Okay, ${sender}, I will remind ${toWho} in ${channel} ${human}`);
-            }
-        });*/
-    }
-
-    parseReminderString(input:string) {
-        let cruft = {
-            that: 1,
-            to: 1
-        };
-
-        let chronoParsed = chrono.parse(input);
-        let period = -1;
-
-        let split = input.split(/\s+/);
-        let who = split.shift();
-
-        input = split.map(e => e.trim()).join(' ').replace(/\s+/, ' ');
-
-        if(chronoParsed && chronoParsed[0] && chronoParsed[0].hasOwnProperty('text')) {
-            period = chronoParsed[0].start.date().getTime();
-            input = input.replace(chronoParsed[0].text, '').trim();
-        }
-
-        split = input.split(/\s+/);
-
-        let next = split[0];
-
-        while(cruft.hasOwnProperty(next)) {
-            next = split.shift();
-        }
-
-        input = split.map(e => e.trim()).join(' ').replace(/\s+/, ' ');
-
-        return {
-            reminder: input.trim(),
-            remindAfter: period,
-            remindAfterDate: new Date(period),
-            who: who.trim()
-        };
     }
 }
