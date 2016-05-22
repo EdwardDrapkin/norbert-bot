@@ -5,7 +5,7 @@
   "main": "out/main.js",
   "scripts": {
     "build": "babel src --out-dir out/",
-    "test": "mocha --compilers js:babel-core/register src/__tests__/",
+    "test": "mocha --compilers js:babel-core/register src/__tests__/**/*.test.js",
     "start": "NODE_CONFIG_DIR=./out/config node out/main.js",
     "babel-start": "NODE_CONFIG_DIR=./src/config babel-node src/main.js"
   },

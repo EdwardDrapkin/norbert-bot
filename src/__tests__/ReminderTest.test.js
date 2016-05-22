@@ -1,7 +1,7 @@
 import Reminder from '../lib/Reminder';
 import expect from 'expect.js';
 
-const r = new Reminder();
+const r = new Reminder('DSK325PVHGMLJSCW2IK5DNZ4LSNFWG5H');
 
 describe("Reminder.js", () => {
     describe("Wit.AI integration", () => {
@@ -20,7 +20,7 @@ describe("Reminder.js", () => {
             let pending = Object.keys(phrases).length;
 
             for(const phrase in phrases) {
-                r.sendMessage(phrase, (data) => {
+                r.sendMessage(phrase, (e, data) => {
                     expect(data.parsed.who).to.eql(phrases[phrase].who);
                     expect(data.parsed.what).to.eql(phrases[phrase].what);
 
@@ -32,23 +32,3 @@ describe("Reminder.js", () => {
         });
     });
 });
-
-function compareTwoDates(a, b) {
-    return (a-b)/1000 < 1;
-}
-
-function secondsFromNow(seconds) {
-    return Date.now() + seconds;
-}
-
-function minutesFromNow(minutes) {
-    return secondsFromNow(minutes * 60);
-}
-
-function hoursFromNow(hours) {
-    return minutesFromNow(hours * 60);
-}
-
-function daysFromNow(days) {
-    return hoursFromNow(days * 24);
-}
