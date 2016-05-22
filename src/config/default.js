@@ -33,6 +33,10 @@ let wolframAlphaOpts = {
     api_key: 'A4EUG7-AQUAL58QGQ'
 };
 
+let witOpts = {
+    oauth_key: 'DSK325PVHGMLJSCW2IK5DNZ4LSNFWG5H'
+};
+
 /*
  ------------
  Core plugins
@@ -55,7 +59,7 @@ let corePlugins = [
  For requirePlugin(): they are loaded in the order they're specified here.
  */
 
-let plugins = [
+let userPlugins = [
     new KarmaPolicePlugin(),
     new GooglePlugin(googlOpts.api_key),
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),
@@ -63,40 +67,38 @@ let plugins = [
     new WolframAlphaPlugin(wolframAlphaOpts.api_key),
     new UrlTitlePlugin(2000),
     new KarmaPlugin(),
-    new ReminderPlugin(),
+    new ReminderPlugin(witOpts.oauth_key),
     new SedPlugin(),
     new DiceRollerPlugin()
 ];
 
-export default {
-    preferences: {
-        prefix: "!"
-    },
-
-   /* server: {
-        hostname: "irc.p2p-network.net",
-        port: "6667",
-        SSL: false,
-        nick: "norbert-beta",
-        fullname: "Norbert.The.Bot",
-        channels: "#420-bots"
-    },*/
-
-     server: {
-     hostname: "irc.freenode.net",
-     port: "6667",
-     SSL: false,
-     nick: "norbert-beta",
-     fullname: "Norbert.The.Bot",
-     channels:"##phpbartalk"
-
-     },
-
-    database: {
-        type: "sqlite3",
-        location: "Norbert.sqlite"
-    },
-
-    plugins: corePlugins.concat(plugins)
-
+export const database = {
+    type: "sqlite3",
+    location: "Norbert.sqlite"
 };
+
+export const preferences = {
+    prefix: "!"
+};
+
+export const server = {
+    hostname: "irc.freenode.net",
+    port: "6667",
+    SSL: false,
+    nick: "norbert-alpha",
+    fullname: "Norbert.The.Bot",
+    channels: "##phpboots"
+};
+
+/*
+ {
+ hostname: "irc.p2p-network.net",
+ port: "6667",
+ SSL: false,
+ nick: "norbert-beta",
+ fullname: "Norbert.The.Bot",
+ channels: "#420-bots"
+ }
+ */
+
+export const plugins = corePlugins.concat(userPlugins);
