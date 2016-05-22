@@ -2,9 +2,16 @@
 
 import SimpleChanMsgPlugin from 'plugins/SimpleChanMsgPlugin';
 import Norbert from 'lib/Norbert';
-import chrono from 'chrono-node';
+import Reminder from 'lib/Reminder';
 
 export default class ReminderPlugin extends SimpleChanMsgPlugin {
+    reminder:Reminder;
+
+    constructor(token:string) {
+        super();
+        this.reminder = new Reminder(token);
+    }
+
     getHelp() {
         return {
             overview: "the best reminder plugin you will find anywhere on IRC.",
@@ -108,6 +115,26 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
             "INSERT INTO reminders (from_who, channel, to_who, remind_after, reminder, created) " +
             "VALUES (?, ?, ?, ?, ?, ?)");
 
+        this.reminder.sendMessage(`remind ${message}`, (err, data) => {
+            if(!err){
+                let parsed = data.parsed;
+                let fromWho = sender.toLowerCase();
+                let toWho = parsed.who.toLowerCase() == 'me' ? sender : parsed.who.toLowerCase();
+                let remindAfter = parsed.when;
+                let reminder = parsed.what;
+                let created = new Date().getTime();
+                let human = this._remindAfterString(parsed.when);
+
+                stmt.run([fromWho, channel, toWho, remindAfter, reminder, created], err => {
+                    if(err) {
+                        norbert.client.say(channel, "error oh noes");
+                    } else {
+                        norbert.client.say(channel, `Okay, ${sender}, I will remind ${toWho} in ${channel} ${human}`);
+                    }
+                });
+            }
+        });
+/*
         let parsed = this.parseReminderString(message);
         let fromWho = sender.toLowerCase();
         let toWho = parsed.who.toLowerCase() == 'me' ? sender : parsed.who.toLowerCase();
@@ -122,7 +149,7 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
             } else {
                 norbert.client.say(channel, `Okay, ${sender}, I will remind ${toWho} in ${channel} ${human}`);
             }
-        });
+        });*/
     }
 
     parseReminderString(input:string) {
