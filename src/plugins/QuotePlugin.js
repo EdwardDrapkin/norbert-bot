@@ -2,11 +2,13 @@
 
 import SimpleChanMsgPlugin from 'plugins/SimpleChanMsgPlugin';
 import Norbert from 'lib/Norbert';
+import template from 'lib/template';
+
+export function stripTimestamps(input) {
+    return input.replace(/.*?([^\w\s]?[+%@&~]?[a-z])/i, '$1').trim();
+}
 
 export default class QuotePlugin extends SimpleChanMsgPlugin {
-    static stripTimestamps(input) {
-        return input.replace(/^(?:\W*\d*?\W*)*(\W\w)/, '$1').trim();
-    }
 
     getName() {
         return "Quote";
@@ -77,7 +79,7 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
             'VALUES (?, ?, ?, ?)');
 
         channel = channel.toLowerCase();
-        const stripped = QuotePlugin.stripTimestamps(message);
+        const stripped = stripTimestamps(message);
         const created = new Date().getTime();
 
         this.log.trace({
@@ -92,9 +94,9 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
         stmt.run([sender, channel, stripped, created], err => {
             if(err) {
                 norbert.client.say(channel, "error oh noes");
-                this.logError(err, "Error inserting quote.");
+                this.log.error(err, "Error inserting quote.");
             } else {
-                norbert.client.say(channel, `Okay ${sender}, I have stored the quote.`);
+                norbert.client.say(channel, template('Quote.inserted', {sender}));
                 this.log.trace("Success inserting quote.");
             }
         });

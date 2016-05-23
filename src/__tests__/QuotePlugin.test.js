@@ -1,12 +1,14 @@
-import QuotePlugin from '../plugins/QuotePlugin';
+import {stripTimestamps} from '../plugins/QuotePlugin';
 import expect from 'expect.js';
 
 describe("Quote plugin", () => {
     it("Tests removal of various timestamp patterns", () => {
         let messages = [
             "<foo> is a bar",
+            "<@foo> is a bar",
             "foo> is a bar",
             "foo is a bar",
+            "@foo is a bar",
             "foo: is a bar",
             "[foo] is a bar",
             "    foo is a bar",
@@ -25,7 +27,7 @@ describe("Quote plugin", () => {
         for(let message of messages) {
             for(let input of inputs) {
                 const test = `${input} ${message}`;
-                expect(QuotePlugin.stripTimestamps(test)).to.eql(message.trim());
+                expect(stripTimestamps(test)).to.eql(message.trim());
             }
         }
 
