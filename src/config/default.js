@@ -11,6 +11,7 @@ import ReminderPlugin from 'plugins/ReminderPlugin';
 import DiceRollerPlugin from 'plugins/DiceRollerPlugin';
 import HistoryPlugin from 'plugins/HistoryPlugin';
 import SedPlugin from 'plugins/SedPlugin';
+import QuotePlugin from 'plugins/QuotePlugin';
 
 const lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -69,7 +70,8 @@ const userPlugins = [
     new KarmaPlugin(),
     new ReminderPlugin(witOpts.oauth_key),
     new SedPlugin(),
-    new DiceRollerPlugin()
+    new DiceRollerPlugin(),
+    new QuotePlugin()
 ];
 
 export const database = {

@@ -22,6 +22,13 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
         }
     }
 
+    getCommands() {
+        return {
+            addQuote: this.addQuote.bind(this),
+            quote: this.quote.bind(this)
+        };
+    }
+
     init(norbert:Norbert) {
         super.init(norbert);
         norbert.db.run("" +
@@ -30,11 +37,35 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
             "added_by TEXT, " +
             "channel TEXT, " +
             "quote TEXT, " +
-            "created INTEGER," +
+            "created INTEGER" +
             ")");
     }
 
     reset(norbert:Norbert) {
         norbert.db.run("TRUNCATE TABLE quotes");
+    }
+
+    quote(channel:string, sender:string, message:string, norbert:Norbert) {
+        const stmt = norbert.db.prepare('SELECT ID, added_by, quote FROM quotes WHERE channel=? LIMIT 1');
+
+        stmt.all([channel.toLowerCase()], (err, rows) => {
+            for(const row of rows) {
+                let msg = `[${row.ID} - ${row.added_by}] ${row.quote}`;
+                norbert.client.say(channel, msg);
+            }
+        });
+    }
+
+    addQuote(channel:string, sender:string, message:string, norbert:Norbert) {
+        const stmt = norbert.db.prepare('INSERT INTO quotes (added_by, channel, quote, created) ' +
+            'VALUES (?, ?, ?, ?)');
+
+        stmt.run([sender, channel.toLowerCase(), QuotePlugin.stripTimestamps(message), new Date().getTime()], err => {
+            if(err) {
+                norbert.client.say(channel, "error oh noes");
+            } else {
+                norbert.client.say(channel, `Okay ${sender}, I have stored the quote.`);
+            }
+        });
     }
 }
