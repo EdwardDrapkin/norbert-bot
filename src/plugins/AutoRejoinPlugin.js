@@ -24,8 +24,11 @@ export default class AutoRejoinPlugin extends Plugin {
     subscribe(norbert:Norbert) {
         norbert.client.on('KICK', (channel, kicked) => {
             if(kicked == norbert.client.nick) {
+                this.log.warn("I got kicked!");
+
                 setTimeout(() => {
                     norbert.client.join(channel);
+                    this.log.trace(`Rejoined ${channel} after being kicked.`);
                 }, this.sleep);
             }
         })

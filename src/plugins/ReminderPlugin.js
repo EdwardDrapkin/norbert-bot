@@ -29,6 +29,11 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
+        this.log.trace({
+            tableInit: {
+                table: 'reminders'
+            }
+        });
         norbert.db.run("" +
             "CREATE TABLE IF NOT EXISTS reminders (" +
             "ID INTEGER PRIMARY KEY," +
@@ -66,6 +71,13 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
     whatAreMyReminders(channel:string, sender:string, message:string, norbert:Norbert) {
         const stmt = norbert.db.prepare("SELECT  * FROM reminders WHERE from_who = ?");
 
+        this.log.trace({
+            whatAreMyReminders: {
+                sender: sender,
+                channel: channel
+            }
+        });
+
         stmt.all([sender], (err, rows) => {
             if(rows.length == 0) {
                 norbert.client.say(channel, `${sender}, you have no pending sent messages.`);
@@ -88,6 +100,13 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
             "WHERE to_who=? AND channel=? AND remind_after < ?");
 
         const deleteStmt = norbert.db.prepare("DELETE FROM reminders WHERE ID=?");
+
+        this.log.trace({
+            detectReminders: {
+                sender: sender,
+                channel: channel
+            }
+        });
 
         stmt.all([sender.toLowerCase(), channel, new Date().getTime()], (err, rows) => {
             for(const row of rows) {
@@ -115,6 +134,13 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
             "INSERT INTO reminders (from_who, channel, to_who, remind_after, reminder, created) " +
             "VALUES (?, ?, ?, ?, ?, ?)");
 
+        this.log.trace({
+            createReminder: {
+                sender: sender,
+                channel: channel
+            }
+        });
+        
         this.reminder.sendMessage(`remind ${message}`, (err, data) => {
             if(!err && data.parsed){
                 const parsed = data.parsed;
@@ -128,6 +154,9 @@ export default class ReminderPlugin extends SimpleChanMsgPlugin {
                 stmt.run([fromWho, channel, toWho, remindAfter, reminder, created], err => {
                     if(err) {
                         norbert.client.say(channel, "error oh noes");
+                        this.log.error({
+                            error: err
+                        });
                     } else {
                         norbert.client.say(channel, `Okay, ${sender}, I will remind ${toWho} in ${channel} ${human}`);
                     }

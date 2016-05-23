@@ -38,6 +38,11 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
+        this.log.trace({
+            tableInit: {
+                table: 'weather'
+            }
+        });
         norbert.db.run("CREATE TABLE IF NOT EXISTS weather (name TEXT PRIMARY KEY, weather TEXT)");
     }
 
@@ -48,6 +53,14 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     saveUser(channel:string, sender:string, message:string, norbert:Norbert) {
         const user = sender;
         const weather = message;
+
+        this.log.trace({
+            saveUser: {
+                channel: channel,
+                "requested by": sender,
+                message: message
+            }
+        });
 
         const stmt = norbert.db.prepare("INSERT OR REPLACE INTO weather (name, weather) VALUES (?, ?)");
         stmt.run([user, weather], (err) => {
@@ -60,6 +73,13 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     lookupUser(channel:string, sender:string, message:string, norbert:Norbert) {
+        this.log.trace({
+            lookupUser: {
+                channel: channel,
+                "requested by": sender,
+                message: message
+            }
+        });
         const stmt = norbert.db.prepare("SELECT * FROM weather WHERE name=(?)");
         stmt.all([sender], (err, rows) => {
             if(rows.length > 0) {
@@ -72,6 +92,14 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     getWeather(channel:string, sender:string, message:string, norbert:Norbert) {
+        this.log.trace({
+            getWeather: {
+                channel: channel,
+                "requested by": sender,
+                message: message
+            }
+        });
+
         if(!message.trim()) {
             return this.lookupUser(channel, sender, message, norbert);
         }

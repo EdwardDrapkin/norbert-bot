@@ -59,9 +59,19 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
             "   ID < (SELECT MAX(ID) FROM history) AND" +
             "   message NOT LIKE 's/%'" +
             "ORDER BY ID DESC LIMIT 5");
+
+        this.log.trace({
+            handleReplaceMessage: {
+                channel: channel,
+                "requested by": sender,
+                message: message
+            }
+        });
+
         stmt.all([channel], (err, rows) => {
             if(err) {
-                console.error(err);
+                this.log.error({error: err});
+
                 norbert.client.say(channel, "error");
                 return;
             }

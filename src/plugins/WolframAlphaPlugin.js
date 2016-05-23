@@ -32,6 +32,14 @@ export default class WolframAlphaPlugin extends SimpleChanMsgPlugin {
     }
 
     alpha(channel:string, sender:string, message:string, norbert:Norbert) {
+        this.log.trace({
+            alpha: {
+                channel: channel,
+                "requested by": sender,
+                message: message
+            }
+        });
+
         this.client.query(message, function(err, results) {
             if(err != null) {
                 norbert.client.say(channel, "error");

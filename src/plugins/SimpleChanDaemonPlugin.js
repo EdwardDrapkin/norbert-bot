@@ -3,9 +3,10 @@
 import Plugin from 'plugins/Plugin';
 import Norbert from 'lib/Norbert';
 
-export default class SimpleChannelDaemonPlugin extends Plugin {
+export default class SimpleChanDaemonPlugin extends Plugin {
     constructor() {
         super();
+
         this.receiverMatches = this._buildMatcherRegexp(this.getChannels());
     }
 

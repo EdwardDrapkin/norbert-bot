@@ -21,6 +21,12 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
+        this.log.trace({
+            tableInit: {
+                table: 'history'
+            }
+        });
+
         norbert.db.run("" +
             "CREATE TABLE IF NOT EXISTS history (" +
             "ID integer primary key, " +
@@ -47,6 +53,14 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
     findInHistory(channel:string, sender:string, message:string, norbert:Norbert) {
         const stmt =
             norbert.db.prepare("SELECT * FROM history WHERE `from` = ? ORDER BY ID DESC LIMIT 1");
+
+        this.log.trace({
+           findInHistory: {
+               channel: channel,
+               "requested by": sender,
+               message: message
+           }
+        });
 
         stmt.all([message], (err, rows) => {
             if(err) {

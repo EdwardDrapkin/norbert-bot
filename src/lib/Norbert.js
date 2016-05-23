@@ -5,13 +5,15 @@ import {Client} from 'irc';
 import Plugin from 'plugins/Plugin';
 import sqlite3 from 'sqlite3';
 import EventEmitter from 'events';
+import Logger from 'bunyan';
+import path from 'path';
 
 export default class Norbert {
     client:(Client & EventEmitter.EventEmitter);
 
     db:sqlite3.Database;
 
-    loaded: { [plugin:string] : true };
+    loaded:{ [plugin:string] : true } = {};
 
     meta:{
         prefix: string,
@@ -29,7 +31,11 @@ export default class Norbert {
                 [K:string]: string
             }
         }
+    } = {
+        __commands: {}
     };
+
+    logger:Logger;
 
     constructor() {
         this.setupDatabase();
@@ -38,17 +44,15 @@ export default class Norbert {
         const plugins:[Plugin] = config.get('plugins');
         const pjson = require('../../package.json');
 
-        this.loaded = {};
-
-        this.helpData = {
-            __commands: {}
-        };
-
         this.meta = {
             prefix: config.get('preferences.prefix'),
             version: pjson.version,
             name: pjson.name
         };
+
+        this.getLogger().info({meta: this.meta}, "Norbert startup.");
+
+        this.getLogger().info(`Attempting to load ${plugins.length} plugins`);
 
         for(const plugin of plugins) {
             this.loadPlugin(plugin);
@@ -56,14 +60,65 @@ export default class Norbert {
     }
 
     loadPlugin(plugin:Plugin) {
+        this.getLogger().trace("Initializing plugin: " + plugin.getName());
         plugin.init(this);
         plugin.subscribe(this);
         this.addHelpData(plugin);
+
         this.loaded[plugin.getName()] = true;
+    }
+
+    getLogger(plugin:Plugin|false = false) {
+        if(!this.logger) {
+            this._getLogger();
+        }
+
+        if(!plugin) {
+            return this.logger;
+        } else {
+            return this.logger.child({plugin});
+        }
+    }
+
+    _getLogger() {
+        const level = config.get('logging.level').toString().toLowerCase();
+        let filename = path.resolve(config.get('logging.directory') + "/norbert.log");
+
+        const streams = [
+            {
+                path: filename,
+                level: level
+            }
+        ];
+
+        switch(level) {
+            case 'info':
+            case 'debug':
+            case 'trace':
+                streams.push({
+                    stream: process.stdout,
+                    level: level
+                });
+        }
+
+        this.logger = Logger.createLogger({
+            name: 'norbert',
+            streams: streams,
+            serializers: {
+                plugin: plugin => {
+                    return {
+                        name: plugin.getName(),
+                        ctor: plugin.constructor.name
+                    }
+                }
+            }
+        });
     }
 
     setupClient() {
         const server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
+
+        this.getLogger().info({server}, "Norbert client startup.");
 
         const temp = new Client(server.hostname, server.nick, {
             realName: server.fullname,
@@ -75,13 +130,15 @@ export default class Norbert {
         temp.setMaxListeners(1000);
 
         temp.on('error', (e) => {
-            console.error(e);
+            this.getLogger().error({error: e}, "IRC client error");
         });
 
         this.client = temp;
     }
 
     setupDatabase() {
+        this.getLogger().trace("Initializing sqlite");
+
         this.db = new sqlite3.Database(config.get('database.location'));
         console.info("Startup DB vacuum, this may take a moment.");
         this.db.run("VACUUM");

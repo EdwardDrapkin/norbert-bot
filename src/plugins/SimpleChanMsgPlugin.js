@@ -10,7 +10,6 @@ export default class SimpleChanMsgPlugin extends Plugin {
     constructor() {
         super();
         this.receiverMatches = this._buildMatcherRegexp(this.getChannels());
-        this._commands = this._getCommands();
     }
 
     getChannels() : [string] {
@@ -48,6 +47,7 @@ export default class SimpleChanMsgPlugin extends Plugin {
     init(norbert:Norbert) {
         super.init(norbert);
         this.trigger = norbert.meta.prefix;
+        this._commands = this._getCommands();
     }
 
     subscribe(norbert:Norbert) {

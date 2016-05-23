@@ -24,6 +24,12 @@ export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
+        this.log.trace({
+            tableInit: {
+                table: 'karma'
+            }
+        });
+
         norbert.db.run("CREATE TABLE IF NOT EXISTS karma (name TEXT PRIMARY KEY, channel TEXT, score INTEGER)");
     }
 
@@ -47,6 +53,14 @@ export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
         const stmt = norbert.db.prepare("INSERT OR REPLACE INTO karma (name, channel, score) " +
             "VALUES (?, ?, COALESCE((SELECT score from karma WHERE name=? and channel=?),0) + 1)");
 
+        this.log.trace({
+            incrementKarma: {
+                triggered: triggered,
+                channel: channel,
+                sender: sender
+            }
+        });
+
         stmt.run([triggered, channel, triggered, channel], err => {
             if(err) {
                 norbert.client.say(channel, "error oh noes");
@@ -59,6 +73,14 @@ export default class KarmaPolicePlugin extends SimpleChanDaemonPlugin {
 
         const stmt = norbert.db.prepare("INSERT OR REPLACE INTO karma (name, channel, score) " +
             "VALUES (?, ?, COALESCE((SELECT score from karma WHERE name=? and channel=?),0) - 1)");
+
+        this.log.trace({
+            decrementKarma: {
+                triggered: triggered,
+                channel: channel,
+                sender: sender
+            }
+        });
 
         stmt.run([triggered, channel, triggered, channel], err => {
             if(err) {

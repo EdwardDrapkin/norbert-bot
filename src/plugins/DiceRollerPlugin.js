@@ -33,6 +33,13 @@ export default class DiceRollerPlugin extends SimpleChanMsgPlugin {
 
         message = message.trim();
 
+        const roll = {
+            "requested by": sender,
+            message: message,
+            channel: channel
+        };
+
+
         if(message != "") {
             const num = message.split(/\s+/)[0];
             if(num.match(/d/)) {
@@ -45,17 +52,17 @@ export default class DiceRollerPlugin extends SimpleChanMsgPlugin {
                     results.push(Math.floor(Math.random() * (sides - 1)) + 1);
                 }
 
+                roll.results = results;
                 norbert.client.say(channel, `${sender}, I rolled you ${dice} d${sides}s: [${results.join(', ')}]`);
             } else {
                 sides = Number.parseInt(num);
 
                 const result = Math.floor(Math.random() * (sides - 1)) + 1;
+                roll.result = result;
                 norbert.client.say(channel, `${sender}, I rolled you a d${sides}: ${result}`);
             }
+
+            this.log.trace({roll});
         }
-
-
-
-
     }
 }

@@ -104,3 +104,8 @@ export const server = {
  */
 
 export const plugins = corePlugins.concat(userPlugins);
+
+export const logging = {
+    directory: 'logs/',
+    level: 'trace'
+};

@@ -24,6 +24,13 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
+
+        this.log.trace({
+            tableInit: {
+                table: 'lastfm'
+            }
+        });
+
         norbert.db.run("CREATE TABLE IF NOT EXISTS lastfm (name TEXT PRIMARY KEY, lastfm TEXT)");
     }
 
@@ -56,6 +63,12 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
 
     lookupUser(channel:string, sender:string, message:string, norbert:Norbert) {
         const stmt = norbert.db.prepare("SELECT * FROM lastfm WHERE name=(?)");
+        this.log.trace({
+            lookupUser: {
+                sender: sender
+            }
+        });
+
         stmt.all([sender], (err, rows) => {
             if(rows.length > 0) {
                 norbert.client.say(channel, `${sender}, I know you as ${rows[0].lastfm}`);
@@ -70,6 +83,13 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         const lastFm = message;
 
         const stmt = norbert.db.prepare("INSERT OR REPLACE INTO lastfm (name, lastfm) VALUES (?, ?)");
+        this.log.trace({
+            saveUser: {
+                sender: sender,
+                lastFm: lastFm
+            }
+        });
+
         stmt.run([user, lastFm], (err) => {
             if(err) {
                 norbert.client.say(channel, "error oh noes");
@@ -90,6 +110,12 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
         }
 
         const stmt = norbert.db.prepare("SELECT * FROM lastfm WHERE name=(?)");
+        this.log.trace({
+            nowPlaying: {
+                lastFm: user
+            }
+        });
+
         stmt.all([user], (err, rows) => {
 
             let lastFmName = "";

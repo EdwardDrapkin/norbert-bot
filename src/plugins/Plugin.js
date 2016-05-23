@@ -1,10 +1,12 @@
 // @flow
 
 import Norbert from 'lib/Norbert';
+import Logger from 'bunyan';
 
 export default class Plugin {
     receiverMatches:RegExp;
     hasPlugin:(plugin:string) => boolean;
+    log:Logger;
 
     constructor() {
         this.receiverMatches = /.*/;
@@ -14,6 +16,7 @@ export default class Plugin {
 
     init(norbert:Norbert) {
         this.hasPlugin = norbert.hasPlugin.bind(norbert);
+        this.log = norbert.getLogger(this);
     }
 
     reset(norbert:Norbert) {}

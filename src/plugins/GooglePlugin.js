@@ -36,10 +36,22 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
     googleQuery(numResults:number, channel:string, sender:string, message:string, norbert:Norbert) {
         let count = 0;
 
+        const googleSearch = {
+            "requested by": sender,
+            channel: channel,
+            message: message
+        };
+
+        this.log.trace({
+            googleRequest: {
+                query: message
+            }
+        });
+
         google(message, (err, results) => {
-            if(err != null) {
+            if(err && Object.keys(err).length > 0) {
                 norbert.client.say(channel, "error!");
-                console.log(err);
+                this.log.error({err, googleSearch});
                 return;
             }
 
@@ -52,25 +64,37 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
                 }
             }
 
+            googleSearch.links = links;
+
             const ress = [];
-            googl.shorten(results.url)
-                .then((shortened) => {
-                    ress.push(`Google Search results for "${results.query}" - ${shortened}`);
-                    this.shorten(links, ress, 0, channel, sender, message, norbert);
-                })
+            googl.shorten(results.url).then((shortened) => {
+                ress.push(`Google Search results for "${results.query}" - ${shortened}`);
+                this.shorten(links, ress, 0, channel, sender, message, norbert, googleSearch);
+            }).catch(err => {
+                norbert.client.say(channel, `Error!2`);
+                this.log.error({err,googleSearch});
+            });
         });
     }
 
-    shorten(links:[{title:string,href:string}], results:[string], num:number, channel:string, sender:string, message:string, norbert:Norbert) {
+    shorten(links:[{title:string,href:string}], results:[string], num:number, channel:string, sender:string,
+        message:string, norbert:Norbert, googleSearch:Object) {
         if(links.length > 0) {
             const link = links.pop();
 
-            googl.shorten(link.href)
-                .then((shortened) => {
-                    const title = this.shortenPhrase(link.title);
-                    results.push(` - (${++num}) ${title} <${shortened}>`);
-                    this.shorten(links, results, num, channel, sender, message, norbert);
-                });
+            this.log.trace({shortening: {
+                link: link.href
+            }});
+
+            googl.shorten(link.href).then((shortened) => {
+                const title = this.shortenPhrase(link.title);
+                results.push(` - (${++num}) ${title} <${shortened}>`);
+
+                this.shorten(links, results, num, channel, sender, message, norbert, googleSearch);
+            }).catch(err => {
+                norbert.client.say(channel, `Error!3`);
+                this.log.error({err, googleSearch});
+            });
         } else {
             if(results.length > 2) {
                 for(const msg of results) {
@@ -80,6 +104,7 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
                 norbert.client.say(channel, results.join(""));
             }
 
+            this.log.trace({googleSearch});
         }
 
     }

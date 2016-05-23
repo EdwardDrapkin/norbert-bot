@@ -31,6 +31,13 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
+
+        this.log.trace({
+            tableInit: {
+                table: 'quotes'
+            }
+        });
+
         norbert.db.run("" +
             "CREATE TABLE IF NOT EXISTS quotes (" +
             "ID INTEGER PRIMARY KEY," +
@@ -48,9 +55,18 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
     quote(channel:string, sender:string, message:string, norbert:Norbert) {
         const stmt = norbert.db.prepare('SELECT ID, added_by, quote FROM quotes WHERE channel=? LIMIT 1');
 
+        this.log.trace({
+            quote: {
+                channel: channel,
+                "requested by": sender,
+                message: message
+            }
+        });
+
         stmt.all([channel.toLowerCase()], (err, rows) => {
             for(const row of rows) {
                 let msg = `[${row.ID} - ${row.added_by}] ${row.quote}`;
+                this.log.trace("Fetched quote: " + msg);
                 norbert.client.say(channel, msg);
             }
         });
@@ -60,11 +76,26 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
         const stmt = norbert.db.prepare('INSERT INTO quotes (added_by, channel, quote, created) ' +
             'VALUES (?, ?, ?, ?)');
 
-        stmt.run([sender, channel.toLowerCase(), QuotePlugin.stripTimestamps(message), new Date().getTime()], err => {
+        channel = channel.toLowerCase();
+        const stripped = QuotePlugin.stripTimestamps(message);
+        const created = new Date().getTime();
+
+        this.log.trace({
+            addQuote: {
+                sender: sender,
+                channel: channel,
+                created: created,
+                message: stripped
+            }
+        }, "Preparing to insert quote");
+
+        stmt.run([sender, channel, stripped, created], err => {
             if(err) {
                 norbert.client.say(channel, "error oh noes");
+                this.logError(err, "Error inserting quote.");
             } else {
                 norbert.client.say(channel, `Okay ${sender}, I have stored the quote.`);
+                this.log.trace("Success inserting quote.");
             }
         });
     }

@@ -30,6 +30,15 @@ export default class KarmaPlugin extends SimpleChanMsgPlugin {
 
     checkKarma(channel:string, sender:string, message:string, norbert:Norbert) {
         const stmt = norbert.db.prepare("SELECT score FROM karma WHERE name=? AND channel=?");
+
+        this.log.trace({
+            checkKarma: {
+                channel: channel,
+                "requested by": sender,
+                user: message
+            }
+        });
+
         stmt.all([message, channel], (err, rows) => {
             if(rows.length > 0) {
                 const score = rows[0].score;
