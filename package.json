@@ -46,7 +46,6 @@
     "image-size": "^0.5.0",
     "irc": "^0.5.0",
     "lastfmapi": "^0.1.1",
-    "libxmljs": "polotek/libxmljs",
     "mediainfo-q": "0.0.4",
     "mktemp": "^0.4.0",
     "mp4": "0.0.1",
@@ -55,9 +54,10 @@
     "node-wit": "^3.3.2",
     "request": "^2.72.0",
     "sanitize-filename": "^1.6.0",
-    "sqlite3": "EdwardDrapkin/node-sqlite3",
+    "sqlite3": "^3.1.4",
+    "string-template": "^1.0.0",
     "temp": "^0.8.3",
     "url": "^0.11.0",
-    "wolfram-alpha": "^0.4.0"
+    "wolfram-alpha": "EdwardDrapkin/wolfram-alpha"
   }
 }
