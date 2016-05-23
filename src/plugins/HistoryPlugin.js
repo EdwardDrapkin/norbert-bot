@@ -56,15 +56,15 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
             }
 
             if (rows.length > 0) {
-                norbert.client.say(channel, this.createMessageFromRow(rows[0]));
+                norbert.client.say(channel, HistoryPlugin.createMessageFromRow(rows[0]));
             } else {
-                norbert.client.say(channel, `I don't remember ${message} at all, sadly.`);
+                norbert.client.say(channel, `${sender}, I don't remember ${message} at all, sadly.`);
             }
 
         });
     }
 
-    createMessageFromRow(row : {to:string, from:string, message: string, timestamp: number, event:string}){
+    static createMessageFromRow(row : {to:string, from:string, message: string, timestamp: number, event:string}){
         const humanDate = new Date(row.timestamp).toLocaleDateString('en-US',
             {hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short'});
 

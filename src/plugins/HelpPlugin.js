@@ -92,7 +92,6 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
             return;
         }
 
-        const pluginsN = Object.keys(_plugins).length;
         const plugin = _plugins[message.trim()].overview;
 
         const msg = `${message.trim()} - ${plugin}`;

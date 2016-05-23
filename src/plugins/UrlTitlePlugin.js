@@ -17,7 +17,7 @@ const request = (...args) => {
     return _request.defaults({
         gzip: true,
         headers: {
-            'User-Agent': 'norbert',
+            'User-Agent': 'norbert'
         }
     })(...args).on('response', response => {
         let buffer = false;
@@ -34,7 +34,6 @@ const request = (...args) => {
 };
 
 export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
-    timeout:Number;
     handlers: [
         (str:string, response:http.IncomingMessage, body: string, announce:(msg:string)=>void)=>boolean
     ];

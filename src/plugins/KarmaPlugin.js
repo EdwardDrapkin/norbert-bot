@@ -44,7 +44,7 @@ export default class KarmaPlugin extends SimpleChanMsgPlugin {
                 }
 
             } else {
-                norbert.client.say(channel, `${message} has no soul!`);
+                norbert.client.say(channel, `${message} has no soul! Perhaps you can tell me something ${sender}?`);
             }
         });
     }

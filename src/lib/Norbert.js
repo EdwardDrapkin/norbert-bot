@@ -1,19 +1,24 @@
 // @flow
 
 import config from 'config';
-import irc from 'irc';
+import {Client} from 'irc';
 import Plugin from 'plugins/Plugin';
 import sqlite3 from 'sqlite3';
+import EventEmitter from 'events';
 
 export default class Norbert {
-    client:irc.Client;
+    client:(Client & EventEmitter.EventEmitter);
+
     db:sqlite3.Database;
+
     loaded: { [plugin:string] : true };
+
     meta:{
         prefix: string,
         version: string,
         name: string
     };
+
     helpData:{
         __commands: {
             [K:string]: string
@@ -60,7 +65,7 @@ export default class Norbert {
     setupClient() {
         const server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
 
-        const temp = new irc.Client(server.hostname, server.nick, {
+        const temp = new Client(server.hostname, server.nick, {
             realName: server.fullname,
             debug: true,
             channels: server.channels.split(',').map(e=>e.trim())

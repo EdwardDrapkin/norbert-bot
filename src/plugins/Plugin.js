@@ -33,10 +33,10 @@ export default class Plugin {
             [K:string]: string
         }
     } {
-        throw new Error("this needs to be overriden.");
+        throw new Error("this needs to be overridden.");
     }
 
     getName():string {
-        throw new Error("this needs to be overriden.");
+        throw new Error("this needs to be overridden.");
     }
 }

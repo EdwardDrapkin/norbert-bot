@@ -17,21 +17,13 @@ export default class AutoRejoinPlugin extends Plugin {
 
     getHelp() {
         return {
-            overview: "AutoRejoin when KICKed",
-            commands: {
-
-            }
+            overview: "AutoRejoin when KICKed"
         }
     }
 
     subscribe(norbert:Norbert) {
-        norbert.client.on('KICK', (data) => {
-            const channel = data.receiver;
-            const kicker = data.snder;
-            const kicked = data.message[0];
-            const kickMsg = data.message[1];
-
-            if(kicked == norbert.client.nickname) {
+        norbert.client.on('KICK', (channel, kicked) => {
+            if(kicked == norbert.client.nick) {
                 setTimeout(() => {
                     norbert.client.join(channel);
                 }, this.sleep);
