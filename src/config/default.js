@@ -12,6 +12,7 @@ import DiceRollerPlugin from 'plugins/DiceRollerPlugin';
 import HistoryPlugin from 'plugins/HistoryPlugin';
 import SedPlugin from 'plugins/SedPlugin';
 import QuotePlugin from 'plugins/QuotePlugin';
+import TableFlipPlugin from 'plugins/TableFlipPlugin';
 import _strings from './strings';
 
 const lastFmOpts = {
@@ -72,7 +73,8 @@ const userPlugins = [
     new ReminderPlugin(witOpts.oauth_key),
     new SedPlugin(),
     new DiceRollerPlugin(),
-    new QuotePlugin()
+    new QuotePlugin(),
+    new TableFlipPlugin()
 ];
 
 export const strings = _strings;

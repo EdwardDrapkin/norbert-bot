@@ -21,6 +21,17 @@ export default {
         replaced: "{sender} suggests: <{from}> {replaced}"
     },
 
+    TableFlip: {
+        help: {
+            overview: "FLIP. TABLES.",
+            commands: {
+                flip: "FLIP THAT TABLE"
+            }
+        },
+
+        flipper: "(╯°□°）╯︵ {message}"
+    },
+
     UrlTitle: {
         help: {
             overview: "Gets titles from URLs."

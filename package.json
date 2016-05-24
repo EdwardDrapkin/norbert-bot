@@ -40,6 +40,7 @@
     "chrono-node": "^1.2.1",
     "config": "^1.20.1",
     "filesize": "^3.3.0",
+    "flip-text": "^1.1.0",
     "goo.gl": "^0.1.4",
     "google": "^2.0.0",
     "http": "0.0.0",
