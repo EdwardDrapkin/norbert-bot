@@ -11,5 +11,15 @@ export default {
         },
         inserted: "Okay {sender}, I have inserted the quote!",
         fetched: "[{ID} - {addedBy}] {quote}"
+    },
+
+    WolframAlpha: {
+        fetched:  "<Wolfram|Alpha> {text}",
+        help: {
+            overview: "Query Wolfram|Alpha",
+            commands: {
+                wa: "query - do a search."
+            }
+        }
     }
 }

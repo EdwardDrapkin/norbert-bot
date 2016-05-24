@@ -3,6 +3,7 @@
 import SimpleChanMsgPlugin from 'plugins/SimpleChanMsgPlugin';
 import Norbert from 'lib/Norbert';
 import WolframAlpha from 'wolfram-alpha';
+import template from 'lib/template';
 
 export default class WolframAlphaPlugin extends SimpleChanMsgPlugin {
     client:WolframAlpha;
@@ -17,12 +18,7 @@ export default class WolframAlphaPlugin extends SimpleChanMsgPlugin {
     }
 
     getHelp() {
-        return {
-            overview: "Query Wolfram|Alpha",
-            commands: {
-                wa: "query - do a search.",
-            }
-        }
+        return template('WolframAlpha.help');
     }
 
     getCommands() {
@@ -43,7 +39,7 @@ export default class WolframAlphaPlugin extends SimpleChanMsgPlugin {
         this.client.query(message, function(err, results) {
             if(err != null) {
                 norbert.client.say(channel, "error");
-                console.log(err)
+                this.log.error({err:err});
             }
 
             for(const result of results) {
@@ -51,7 +47,8 @@ export default class WolframAlphaPlugin extends SimpleChanMsgPlugin {
                     && result.hasOwnProperty('subpods') &&
                         result.subpods.length > 0
                 ) {
-                    norbert.client.say(channel, `<Wolfram|Alpha> ${result.subpods[0].text}`);
+                    let text = result.subpods[0].text;
+                    norbert.client.say(channel, template('WolframAlpha.fetched', {text}));
                 }
             }
         });
