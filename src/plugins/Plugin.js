@@ -15,8 +15,8 @@ export default class Plugin {
 
 
     init(norbert:Norbert) {
-        this.hasPlugin = norbert.hasPlugin.bind(norbert);
         this.log = norbert.getLogger(this);
+        this.hasPlugin = norbert.hasPlugin.bind(norbert);
     }
 
     reset(norbert:Norbert) {}

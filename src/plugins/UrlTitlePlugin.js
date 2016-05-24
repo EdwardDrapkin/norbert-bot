@@ -17,6 +17,7 @@ temp.track();
 const request = (...args) => {
     return _request.defaults({
         gzip: true,
+        encoding: null,
         headers: {
             'User-Agent': 'norbert'
         }
@@ -39,8 +40,8 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         (str:string, response:http.IncomingMessage, body: string, announce:(msg:string)=>void)=>boolean
     ];
 
-    constructor() {
-        super();
+    init(norbert:Norbert) {
+        super.init(norbert);
 
         this.handlers = [
             this.imgurGifVHandler.bind(this),
@@ -50,13 +51,14 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         ]
     }
 
+
     addHandler(handler:(str:string, response:http.IncomingMessage, body:string, announce:(msg:string)=>void)=>boolean) {
         this.handlers.unshift(handler);
     }
-    
+
     getTriggers() :[ (word:string, sender:string, channel:string) => false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void] {
         return [
-            this.isUrl
+            this.isUrl.bind(this)
         ];
     }
 
@@ -69,7 +71,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     }
 
     isUrl(word:string, sender:string, channel:string) :false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void {
-        return word.match(/[^\b]+\.[a-z]{2,6}/i) != null ? this.getUrlTitle : false;
+        return word.match(/[^\b]+\.[a-z]{2,6}/i) != null ? this.getUrlTitle.bind(this) : false;
     }
 
     getUrlTitle(channel:string, sender:string, message:string, norbert:Norbert, triggered:string) {
@@ -78,6 +80,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         }
 
         _request({gzip: true, method: 'HEAD', uri: url.parse(triggered), timeout: 15000}, (err, headResponse, headBody) => {
+
             if(err) {
                 console.error(err);
                 return;
@@ -146,18 +149,29 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         if(resp.headers['content-type'].startsWith('image/')) {
             request(str, (error, resp, _body) => {
                 if(!error) {
-                    const image = imageSize(resp.buffer);
-                    const humanSize = resp.headers['content-length'] > 0 ?
-                                    filesize(resp.headers['content-length']) : '';
+                    try {
+                        let buffer;
 
-                    const message = template("UrlTitle.image", {
-                        height: image.height,
-                        width: image.width,
-                        type: image.type,
-                        humanSize: humanSize
-                    });
+                        if(resp.buffer) {
+                            buffer = resp.buffer;
+                        } else {
+                            buffer = _body;
+                        }
+                        const image = imageSize(buffer);
+                        const humanSize = resp.headers['content-length'] > 0 ?
+                                          filesize(resp.headers['content-length']) : '';
 
-                    announce(message);
+                        const message = template("UrlTitle.image", {
+                            height: image.height,
+                            width: image.width,
+                            type: image.type,
+                            humanSize: humanSize
+                        });
+
+                        announce(message);
+                    } catch(err) {
+                        this.log.error({err});
+                    }
                 }
             });
 
