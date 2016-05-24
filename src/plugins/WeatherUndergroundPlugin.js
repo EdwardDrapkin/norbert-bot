@@ -3,6 +3,7 @@
 import SimpleChanMsgPlugin from 'plugins/SimpleChanMsgPlugin';
 import Wunderground from 'node-weatherunderground';
 import Norbert from 'lib/Norbert';
+import template from 'lib/template';
 
 export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     client:Wunderground;
@@ -17,14 +18,7 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     getHelp() {
-        return {
-            overview: "Weather Underground Plugin",
-            commands: {
-                weather : "Gets the weather, shocking!",
-                w : "Gets the weather with less keystrokes",
-                setWeather : "Sets your weather location"
-            }
-        }
+        return template('WeatherUnderground.help');
     }
 
     getCommands() {
@@ -65,9 +59,9 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
         const stmt = norbert.db.prepare("INSERT OR REPLACE INTO weather (name, weather) VALUES (?, ?)");
         stmt.run([user, weather], (err) => {
             if(err) {
-                norbert.client.say(channel, "error oh noes");
+                norbert.client.say(channel, template('error'));
             } else {
-                norbert.client.say(channel, `${sender}, I will now remember your location as ${weather}`);
+                norbert.client.say(channel, template('WeatherUnderground.userSaved', {sender, weather}));
             }
         });
     }
@@ -86,7 +80,7 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
                 const weather = rows[0].weather;
                 return this.getWeather(channel, sender, weather, norbert);
             } else {
-                norbert.client.say(channel, `${sender}, I don't have any weather location saved for you.`);
+                norbert.client.say(channel, template('WeatherUnderground.unknownUser', {sender}));
             }
         });
     }
@@ -107,7 +101,7 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
         this.client.conditions({city: message}, (err, data) => {
             let conditions = this.getWeatherConditionsString(data);
             if(conditions === false) {
-                conditions = `No weather found for ${message}`;
+                conditions = template('WeatherUnderground.noConditions', {message});
             }
 
             norbert.client.say(channel, conditions);
@@ -137,8 +131,8 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
         const feelsLike = data.feelslike_string;
         const url = data.forecast_url;
 
-        return `Current conditions: ${weather} / ${temp} [feels like ${feelsLike}] `
-            + ` / ${humidity} humidity / Wind ${wind} / ${observation} at ${location}`
-            + ` / More at ${url}`;
+        return template('WeatherUnderground.currentConditions', {
+                weather, temp, feelsLike, wind, humidity, observation, location, url
+            });
     }
 }

@@ -11,6 +11,7 @@ import mediainfo from 'mediainfo-q';
 import temp from 'temp';
 import fs from 'fs';
 import http from 'http';
+import template from 'lib/template';
 
 temp.track();
 const request = (...args) => {
@@ -56,10 +57,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     }
 
     getHelp() {
-        return {
-            overview: "Gets titles from URLs.",
-            commands: {}
-        };
+        return template('UrlTitle.help');
     }
 
     getName() {
@@ -86,7 +84,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
 
             while(status == false && i + 1 < this.handlers.length) {
                 status = this.handlers[++i](triggered, headResponse, headBody, (msg) => {
-                    norbert.client.say(channel, `<${sender}> ${msg}`);
+                    norbert.client.say(channel, template('UrlTitle.title', {sender, msg}));
                 });
             }
         });
@@ -111,7 +109,14 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
                                 }
                             }
                         } catch(e) {}
-                        announce(`video/mp4: ${res[0].duration}, ${dimensions}, ${res[0].file_size}`);
+
+                        let attrs = {
+                            fileSize: res[0].file_size,
+                            duration: res[0].duration,
+                            dimensions: dimensions
+                        };
+
+                        announce(template('UrlTitle.mp4', attrs));
                     }).catch(err => {
                         console.error(err);
                     });
@@ -140,7 +145,13 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
                     const image = imageSize(resp.buffer);
                     const humanSize = resp.headers['content-length'] > 0 ?
                                     filesize(resp.headers['content-length']) : '';
-                    const message = `${image.height}x${image.width} ${image.type} - ${humanSize}`;
+
+                    const message = template("UrlTitle.image", {
+                        height: image.height,
+                        width: image.width,
+                        type: image.type,
+                        humanSize: humanSize
+                    });
 
                     announce(message);
                 }
