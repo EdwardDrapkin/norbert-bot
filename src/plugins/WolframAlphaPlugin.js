@@ -18,7 +18,7 @@ export default class WolframAlphaPlugin extends SimpleChanMsgPlugin {
     }
 
     getHelp() {
-        return template('WolframAlpha.help');
+        return template.getObject('WolframAlpha.help');
     }
 
     getCommands() {

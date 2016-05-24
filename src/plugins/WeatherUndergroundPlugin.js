@@ -18,7 +18,7 @@ export default class WeatherUndergroundPlugin extends SimpleChanMsgPlugin {
     }
 
     getHelp() {
-        return template('WeatherUnderground.help');
+        return template.getObject('WeatherUnderground.help');
     }
 
     getCommands() {

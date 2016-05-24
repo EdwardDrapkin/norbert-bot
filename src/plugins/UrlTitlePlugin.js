@@ -57,7 +57,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     }
 
     getHelp() {
-        return template('UrlTitle.help');
+        return template.getObject('UrlTitle.help');
     }
 
     getName() {

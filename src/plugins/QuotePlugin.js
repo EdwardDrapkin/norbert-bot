@@ -15,7 +15,7 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
     }
 
     getHelp() {
-        return template('Quote.help');
+        return template.getObject('Quote.help');
     }
 
     getCommands() {

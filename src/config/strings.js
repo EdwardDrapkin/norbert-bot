@@ -13,6 +13,14 @@ export default {
         fetched: "[{ID} - {addedBy}] {quote}"
     },
 
+    Sed: {
+        help: {
+            overview: "Watches for s/search/replace/flags style statements."
+        },
+
+        replaced: "{sender} suggests: <{from}> {replaced}"
+    },
+
     UrlTitle: {
         help: {
             overview: "Gets titles from URLs."

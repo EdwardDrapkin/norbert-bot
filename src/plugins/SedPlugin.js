@@ -2,6 +2,7 @@
 
 import SimpleChanDaemonPlugin from 'plugins/SimpleChanDaemonPlugin';
 import Norbert from 'lib/Norbert';
+import template from 'lib/template';
 
 export default class SedPlugin extends SimpleChanDaemonPlugin {
     init(norbert:Norbert) {
@@ -14,9 +15,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
     }
 
     getHelp() {
-        return {
-            overview: "Watches for s/search/replace/flags style statements."
-        };
+        return template.getObject('Sed.help');
     }
 
     getTriggers():[ (word:string, sender:string, channel:string, idx?:number) => false|
@@ -71,8 +70,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
         stmt.all([channel], (err, rows) => {
             if(err) {
                 this.log.error({error: err});
-
-                norbert.client.say(channel, "error");
+                norbert.client.say(channel, template('error'));
                 return;
             }
 
@@ -80,8 +78,13 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
                 const row = rows[i];
 
                 if(row.message.match(searchExp)) {
-                    const replaced = `${sender} suggests: <${row.from}> ${row.message.replace(searchExp, replace)}`;
-                    norbert.client.say(channel, replaced);
+                    let attrs = {
+                        sender: sender,
+                        from: row.from,
+                        replaced: row.message.replace(searchExp, replace)
+                    };
+
+                    norbert.client.say(channel, template('Sed.replaced', attrs));
                     break;
                 }
             }
