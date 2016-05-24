@@ -32,6 +32,17 @@ export default {
         flipper: "(╯°□°）╯︵ {message}"
     },
 
+    UrbanDictionary: {
+        help: {
+            overview: "Because nerds don't know the streets.",
+            commands: {
+                ud: "[word] - lookup a word."
+            }
+        },
+
+        definition: "[{word}] - {definition}"
+    },
+
     UrlTitle: {
         help: {
             overview: "Gets titles from URLs."

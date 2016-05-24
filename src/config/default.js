@@ -14,6 +14,7 @@ import SedPlugin from 'plugins/SedPlugin';
 import QuotePlugin from 'plugins/QuotePlugin';
 import TableFlipPlugin from 'plugins/TableFlipPlugin';
 import YouTubePlugin from 'plugins/YouTubePlugin';
+import UrbanDictionaryPlugin from 'plugins/UrbanDictionaryPlugin';
 import _strings from './strings';
 
 const lastFmOpts = {
@@ -80,6 +81,7 @@ const userPlugins = [
     new DiceRollerPlugin(),
     new QuotePlugin(),
     new TableFlipPlugin(),
+    new UrbanDictionaryPlugin(),
     new YouTubePlugin('AIzaSyC-7hr4UZGOnM3E4mPsEpFC6N3ptEYhRr0')
 ];
 
@@ -98,7 +100,7 @@ export const server = {
     hostname: "irc.freenode.net",
     port: "6667",
     SSL: false,
-    nick: "norbert-alpha",
+    nick: "norbert-beta",
     fullname: "Norbert.The.Bot",
     channels: "##phpboots"
 };
