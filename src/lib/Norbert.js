@@ -7,6 +7,7 @@ import sqlite3 from 'sqlite3';
 import EventEmitter from 'events';
 import Logger from 'bunyan';
 import path from 'path';
+import template from 'lib/template';
 
 export default class Norbert {
     client:(Client & EventEmitter.EventEmitter);
@@ -18,7 +19,8 @@ export default class Norbert {
     meta:{
         prefix: string,
         version: string,
-        name: string
+        name: string,
+        strings: Object
     };
 
     helpData:{
@@ -47,8 +49,11 @@ export default class Norbert {
         this.meta = {
             prefix: config.get('preferences.prefix'),
             version: pjson.version,
-            name: pjson.name
+            name: pjson.name,
+            strings: config.get('strings')
         };
+
+        template.prototype.strings = this.meta.strings;
 
         this.getLogger().info({meta: this.meta}, "Norbert startup.");
 
@@ -84,7 +89,7 @@ export default class Norbert {
         const level = config.get('logging.level').toString().toLowerCase();
         let filename = path.resolve(config.get('logging.directory') + "/norbert.log");
 
-        const streams = [
+        const streams:[Object] = [
             {
                 path: filename,
                 level: level

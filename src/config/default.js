@@ -12,6 +12,7 @@ import DiceRollerPlugin from 'plugins/DiceRollerPlugin';
 import HistoryPlugin from 'plugins/HistoryPlugin';
 import SedPlugin from 'plugins/SedPlugin';
 import QuotePlugin from 'plugins/QuotePlugin';
+import _strings from './strings';
 
 const lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
@@ -73,6 +74,8 @@ const userPlugins = [
     new DiceRollerPlugin(),
     new QuotePlugin()
 ];
+
+export const strings = _strings;
 
 export const database = {
     type: "sqlite3",

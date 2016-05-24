@@ -33,7 +33,7 @@ export default class DiceRollerPlugin extends SimpleChanMsgPlugin {
 
         message = message.trim();
 
-        const roll = {
+        const roll:Object = {
             "requested by": sender,
             message: message,
             channel: channel

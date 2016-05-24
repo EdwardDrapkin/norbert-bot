@@ -10,3 +10,4 @@
 module.system.node.resolve_dirname=src/
 module.system.node.resolve_dirname=node_modules
 suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
+esproposal.class_instance_fields=enable

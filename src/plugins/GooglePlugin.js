@@ -36,10 +36,10 @@ export default class GooglePlugin extends SimpleChanMsgPlugin {
     googleQuery(numResults:number, channel:string, sender:string, message:string, norbert:Norbert) {
         let count = 0;
 
-        const googleSearch = {
+        const googleSearch:Object = {
             "requested by": sender,
             channel: channel,
-            message: message
+            message: message,
         };
 
         this.log.trace({

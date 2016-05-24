@@ -1,6 +1,12 @@
+// @flow
+
 import compile from 'string-template/compile';
 
-const template = function(name, ...args) {
+const template = function(name:string, ...args:any) {
+    if(!template.prototype.strings) {
+        template.prototype.strings = {};
+    }
+    
     if(!template.prototype.loaded.hasOwnProperty(name)) {
         const names = name.split('.');
 
