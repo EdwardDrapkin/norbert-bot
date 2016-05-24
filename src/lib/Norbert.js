@@ -127,11 +127,20 @@ export default class Norbert {
 
         this.getLogger().info({server}, "Norbert client startup.");
 
-        const temp = new Client(server.hostname, server.nick, {
+        const params = {
             realName: server.fullname,
             debug: true,
-            channels: server.channels.split(',').map(e=>e.trim())
-        });
+            channels: server.channels.split(',').map(e=>e.trim()),
+            floodProtection: true
+        };
+
+        if(server.sasl) {
+            params.sasl = true;
+            params.userName = server.userName;
+            params.password = server.password;
+        }
+
+        const temp = new Client(server.hostname, server.nick, params);
 
         temp.debug = true;
         temp.setMaxListeners(1000);
