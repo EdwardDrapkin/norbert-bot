@@ -13,6 +13,7 @@ import HistoryPlugin from 'plugins/HistoryPlugin';
 import SedPlugin from 'plugins/SedPlugin';
 import QuotePlugin from 'plugins/QuotePlugin';
 import TableFlipPlugin from 'plugins/TableFlipPlugin';
+import YouTubePlugin from 'plugins/YouTubePlugin';
 import _strings from './strings';
 
 const lastFmOpts = {
@@ -38,6 +39,10 @@ const wolframAlphaOpts = {
 
 const witOpts = {
     oauth_key: 'DSK325PVHGMLJSCW2IK5DNZ4LSNFWG5H'
+};
+
+const ytOpts = {
+
 };
 
 /*
@@ -74,7 +79,8 @@ const userPlugins = [
     new SedPlugin(),
     new DiceRollerPlugin(),
     new QuotePlugin(),
-    new TableFlipPlugin()
+    new TableFlipPlugin(),
+    new YouTubePlugin('AIzaSyC-7hr4UZGOnM3E4mPsEpFC6N3ptEYhRr0')
 ];
 
 export const strings = _strings;

@@ -15,6 +15,7 @@ export default class Norbert {
     db:sqlite3.Database;
 
     loaded:{ [plugin:string] : true } = {};
+    plugins:{ [plugin:string] : Plugin } = {};
 
     meta:{
         prefix: string,
@@ -71,6 +72,7 @@ export default class Norbert {
         this.addHelpData(plugin);
 
         this.loaded[plugin.getName()] = true;
+        this.plugins[plugin.getName()] = plugin;
     }
 
     getLogger(plugin:Plugin|false = false) {

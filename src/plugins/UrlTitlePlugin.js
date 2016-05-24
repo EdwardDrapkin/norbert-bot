@@ -50,6 +50,10 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         ]
     }
 
+    addHandler(handler:(str:string, response:http.IncomingMessage, body:string, announce:(msg:string)=>void)=>boolean) {
+        this.handlers.unshift(handler);
+    }
+    
     getTriggers() :[ (word:string, sender:string, channel:string) => false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void] {
         return [
             this.isUrl
