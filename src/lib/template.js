@@ -6,7 +6,7 @@ const template = function(name:string, ...args:any) {
     if(!template.prototype.strings) {
         template.prototype.strings = {};
     }
-    
+
     if(!template.prototype.loaded.hasOwnProperty(name)) {
         const names = name.split('.');
 
@@ -17,7 +17,12 @@ const template = function(name:string, ...args:any) {
             current = current[n];
         }
 
-        template.prototype.loaded[name] = compile(current);
+        if(typeof current === 'string') {
+            template.prototype.loaded[name] = compile(current);
+        } else {
+            return current;
+        }
+
     }
 
     return template.prototype.loaded[name](...args);

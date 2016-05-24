@@ -15,13 +15,7 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
     }
 
     getHelp() {
-        return {
-            overview: "just a quote plugin, y'all.",
-            commands: {
-                quote: "fetch a quote",
-                addQuote: "[quote] - add a quote"
-            }
-        }
+        return template('Quote.help');
     }
 
     getCommands() {
@@ -67,7 +61,7 @@ export default class QuotePlugin extends SimpleChanMsgPlugin {
 
         stmt.all([channel.toLowerCase()], (err, rows) => {
             for(const row of rows) {
-                let msg = `[${row.ID} - ${row.added_by}] ${row.quote}`;
+                let msg = template('Quote.fetched', {ID: row.ID, addedBy: row.added_by, quote: row.quote});
                 this.log.trace("Fetched quote: " + msg);
                 norbert.client.say(channel, msg);
             }
