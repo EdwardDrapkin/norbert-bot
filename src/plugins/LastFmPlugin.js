@@ -3,23 +3,14 @@
 import SimpleChanMsgPlugin from 'plugins/SimpleChanMsgPlugin';
 import LFM from 'lastfmapi';
 import Norbert from 'lib/Norbert';
+import template from 'lib/template';
 
 export default class LastFmPlugin extends SimpleChanMsgPlugin {
     lfm:LFM;
-    templates: {
-        np: string,
-        not_np: string
-    };
 
-    constructor(apiKey:string, secret:string, templates:{[K:string]:string}) {
+    constructor(apiKey:string, secret:string) {
         super();
         this.lfm = new LFM({api_key: apiKey, secret: secret});
-        this.templates = {
-            'np': "%user% is currently listening to %title% by %artist%.",
-            'not_np': '%user% is currently not listening to anything.'
-        };
-
-        Object.assign(this.templates, templates);
     }
 
     init(norbert:Norbert) {
@@ -51,14 +42,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
     }
 
     getHelp() {
-        return {
-            overview: "Last.FM API Plugin",
-            commands: {
-                np: "(user?) - show your now playing track, or another user's.",
-                setLastFm: "(user) - save your last.fm username instead of defaulting to your IRC handle.",
-                myLastFm: "retrieve your saved last.fm username, if any."
-            }
-        }
+        return template.getObject('LastFm.help');
     }
 
     lookupUser(channel:string, sender:string, message:string, norbert:Norbert) {
@@ -71,9 +55,13 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
 
         stmt.all([sender], (err, rows) => {
             if(rows.length > 0) {
-                norbert.client.say(channel, `${sender}, I know you as ${rows[0].lastfm}`);
+                const attrs = {
+                    user: sender,
+                    lastFm: rows[0].lastfm
+                };
+                norbert.client.say(channel, template('LastFm.whoami', attrs));
             } else {
-                norbert.client.say(channel, `${sender}, I don't know you.`);
+                norbert.client.say(channel, template('LastFm.unknownUser', {user:sender}));
             }
         });
     }
@@ -92,9 +80,10 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
 
         stmt.run([user, lastFm], (err) => {
             if(err) {
-                norbert.client.say(channel, "error oh noes");
+                norbert.client.say(channel, template('error'));
+                this.log.error({err});
             } else {
-                norbert.client.say(channel, `${sender}, I will now remember you as ${lastFm}`);
+                norbert.client.say(channel, template('LastFm.unknownUser', {user:sender, lastFm:lastFm}));
             }
         });
     }
@@ -126,7 +115,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
                 lastFmName = user;
             }
 
-            this.lfm['user'].getRecentTracks({limit: 1, user: lastFmName}, ((err, recent) => {
+            this.lfm['user'].getRecentTracks({limit: 1, user: lastFmName}, (err, recent) => {
                 let info;
 
                 if(recent &&
@@ -138,13 +127,13 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
                 ) {
                     const meta = this.gatherMetaData(recent.track[0]);
                     meta.user = lastFmName;
-                    info = this.processTemplate(this.templates.np, meta);
+                    info = template('LastFm.nP', {meta});
                 } else {
-                    info = this.processTemplate(this.templates.not_np, {user});
+                    info = template('LastFm.notP', {user});
                 }
 
                 client.say(channel, info);
-            }).bind(this));
+            });
         });
     }
 
@@ -161,13 +150,5 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
             (new Date(track['date']['uts'] * 1000)).toDateString() : '';
 
         return {artist, title, album, date};
-    }
-
-    processTemplate(template:string , meta:{[K:string]:string}) {
-        for(const key in meta) {
-            template = template.replace(new RegExp(`%${key}%`, 'g'), meta[key]);
-        }
-
-        return template;
     }
 }

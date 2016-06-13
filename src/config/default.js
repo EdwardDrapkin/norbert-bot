@@ -19,11 +19,7 @@ import _strings from './strings';
 
 const lastFmOpts = {
     api_key: '467b4068bb8b4774f972e95e8bd2d81f',
-    secret: 'a62a330dc620c528440cf9e4c6a30261',
-    templates: {
-        'np': "%user% is currently listening to %title% by %artist%.",
-        'not_np': '%user% is currently not listening to anything.'
-    }
+    secret: 'a62a330dc620c528440cf9e4c6a30261'
 };
 
 const weatherOpts = {
@@ -42,9 +38,7 @@ const witOpts = {
     oauth_key: 'DSK325PVHGMLJSCW2IK5DNZ4LSNFWG5H'
 };
 
-const ytOpts = {
-
-};
+const ytOpts = {};
 
 /*
  ------------
@@ -71,7 +65,7 @@ const corePlugins = [
 const userPlugins = [
     new KarmaPolicePlugin(),
     new GooglePlugin(googlOpts.api_key),
-    new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret, lastFmOpts.templates),
+    new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret),
     new WeatherUndergroundPlugin(weatherOpts.api_key),
     new WolframAlphaPlugin(wolframAlphaOpts.api_key),
     new UrlTitlePlugin(2000),
@@ -93,7 +87,7 @@ export const database = {
 };
 
 export const preferences = {
-    prefix: "!"
+    prefix: "#"
 };
 
 export const server = {
@@ -102,19 +96,8 @@ export const server = {
     SSL: false,
     nick: "norbert-beta",
     fullname: "Norbert.The.Bot",
-    channels: "##phpboots"
-};
-
-/*
- {
- hostname: "irc.p2p-network.net",
- port: "6667",
- SSL: false,
- nick: "norbert-beta",
- fullname: "Norbert.The.Bot",
- channels: "#420-bots"
- }
- */
+    channels: "##phpbarts"
+}
 
 export const plugins = corePlugins.concat(userPlugins);
 

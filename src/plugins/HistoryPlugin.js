@@ -5,6 +5,7 @@ import Norbert from 'lib/Norbert';
 
 export default class HistoryPlugin extends SimpleChanMsgPlugin {
     stmt:Object;
+    recent: {[channel:string]:{[type:string]:[Object]}};
 
     getName() {
         return "History";
@@ -21,6 +22,7 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
 
     init(norbert:Norbert) {
         super.init(norbert);
+
         this.log.trace({
             tableInit: {
                 table: 'history'
@@ -42,6 +44,8 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
                     "(`to`, `from`, message, timestamp, event) " +
                     "VALUES (?, ?, ?, ?, ?)");
         });
+
+        this.recent = {};
     }
 
     getCommands() {
@@ -126,9 +130,25 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
             if(err) {
                 norbert.client.say(to, "error oh noes");
                 console.error(err);
+            } else {
+                this.addToRecent(event, {to, from, message});
             }
-        })
+        });
     }
 
+    addToRecent(type, message) {
+        if(!this.recent.hasOwnProperty(message.to)) {
+            this.recent[message.to] = {};
+        }
 
+        if(!this.recent[message.to].hasOwnProperty(type)) {
+            this.recent[message.to][type] = [];
+        }
+
+        this.recent[message.to][type].unshift(message);
+
+        if(this.recent[message.to][type].length > 5) {
+            this.recent[message.to][type].pop();
+        }
+    }
 }

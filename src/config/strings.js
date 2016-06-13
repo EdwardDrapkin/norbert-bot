@@ -1,6 +1,23 @@
 export default {
     error: "There has been an unexpected error",
 
+    LastFm: {
+        help: {
+            overview: "Last.FM API Plugin",
+            commands: {
+                np: "(user?) - show your now playing track, or another user's.",
+                setLastFm: "(user) - save your last.fm username instead of defaulting to your IRC handle.",
+                myLastFm: "retrieve your saved last.fm username, if any."
+            }
+        },
+
+        whoami: "{user} I know you as {lastFm}.",
+        unknownUser: "{user} I don't have a last.fm nick stored for you.",
+        userSaved: "{user}, I will now remember you as {lastFm}",
+        np: "{user} is currently listening to {title} by {artist}.",
+        notP: "{user} is not currently listening to anything."
+    },
+
     Quote: {
         help: {
             overview: "Just a quote plugin, y'all!",

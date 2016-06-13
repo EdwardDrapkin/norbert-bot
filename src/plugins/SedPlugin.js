@@ -8,6 +8,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
     init(norbert:Norbert) {
         super.init(norbert);
         this.requirePlugin('History');
+        this.historyPlugin = norbert.plugins.History;
     }
 
     getName() {
@@ -53,7 +54,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
         }
 
         //get recent 5 messages from this channel and try to apply them
-        const stmt = norbert.db.prepare("SELECT * FROM history " +
+        /*const stmt = norbert.db.prepare("SELECT * FROM history " +
             "WHERE `to`=? AND " +
             "   ID < (SELECT MAX(ID) FROM history) AND" +
             "   message NOT LIKE 's/%'" +
@@ -74,6 +75,7 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
                 return;
             }
 
+
             for(let i = 0; i < rows.length; i++) {
                 const row = rows[i];
 
@@ -89,6 +91,29 @@ export default class SedPlugin extends SimpleChanDaemonPlugin {
                 }
             }
         })
+
+        */
+
+        let rows = this.historyPlugin.recent[channel]['MESSAGE'];
+
+        if(!rows) {
+            return;
+        }
+
+        for(let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            if(row.message.match(searchExp)) {
+                let attrs = {
+                    sender: sender,
+                    from: row.from,
+                    replaced: row.message.replace(searchExp, replace)
+                };
+
+                norbert.client.say(channel, template('Sed.replaced', attrs));
+                break;
+            }
+        }
     }
 
     parseSed(str:string) : {search: string, replace: string, flags: string}|false {
