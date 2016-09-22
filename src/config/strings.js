@@ -48,7 +48,7 @@ export default {
             overview: "Gets titles from URLs."
         },
 
-        title: "<{sender}> {msg}",
+        title: "{msg}",
         image: "{height}x{width} {type} {humanSize}",
         mp4: "video/mp4: {duration}, {dimensions}, {fileSize}"
     },
