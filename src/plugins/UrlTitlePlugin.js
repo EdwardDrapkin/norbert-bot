@@ -185,7 +185,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         if(resp.headers['content-type'].startsWith('text/')) {
             request(str, (error, resp, _body) => {
                 if(!error) {
-                    const title = cheerio.load(_body)('title').text().trim();
+                    const title = cheerio.load(_body)('title').text().trim().replace('/\s+/g', ' ');
                     if(title != "") {
                         announce(title);
                     }

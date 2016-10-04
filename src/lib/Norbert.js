@@ -8,6 +8,7 @@ import EventEmitter from 'events';
 import Logger from 'bunyan';
 import path from 'path';
 import template from 'lib/template';
+import express from 'express';
 
 export default class Norbert {
     client:(Client & EventEmitter.EventEmitter);
@@ -16,6 +17,8 @@ export default class Norbert {
 
     loaded:{ [plugin:string] : true } = {};
     plugins:{ [plugin:string] : Plugin } = {};
+
+    express: Object;
 
     meta:{
         prefix: string,
@@ -41,6 +44,7 @@ export default class Norbert {
     logger:Logger;
 
     constructor() {
+        this.setupExpress();
         this.setupDatabase();
         this.setupClient();
 
@@ -123,11 +127,20 @@ export default class Norbert {
     }
 
     setupClient() {
-        const server:{hostname:string,port:string,nick:string,fullname:string,channels:string} = config.get('server');
+        const server: {
+            hostname:string,
+            port:string,
+            nick:string,
+            fullname:string,
+            channels:string,
+            sasl?:boolean,
+            userName:string,
+            password: string
+        } = config.get('server');
 
         this.getLogger().info({server}, "Norbert client startup.");
 
-        const params = {
+        const params : {[k: string] : any} = {
             realName: server.fullname,
             debug: true,
             channels: server.channels.split(',').map(e=>e.trim()),
@@ -150,6 +163,16 @@ export default class Norbert {
         });
 
         this.client = temp;
+    }
+
+    setupExpress() {
+        const port = config.get('express.port', '12345');
+
+        this.getLogger().trace("Initializing express");
+        this.express = express();
+        this.express.listen(port, () => {
+            this.getLogger().trace(`Express listening on port ${port}`);
+        });
     }
 
     setupDatabase() {

@@ -3,12 +3,15 @@
 import SimpleChanDaemonPlugin from 'plugins/SimpleChanDaemonPlugin';
 import Norbert from 'lib/Norbert';
 import template from 'lib/template';
+import HistoryPlugin from 'plugins/HistoryPlugin';
 
 export default class SedPlugin extends SimpleChanDaemonPlugin {
+    historyPlugin:HistoryPlugin;
+
     init(norbert:Norbert) {
         super.init(norbert);
         this.requirePlugin('History');
-        this.historyPlugin = norbert.plugins.History;
+        this.historyPlugin = (norbert.plugins : {History:HistoryPlugin}).History;
     }
 
     getName() {

@@ -113,7 +113,8 @@ export default class HelpPlugin extends SimpleChanMsgPlugin {
         const commandsN = Object.keys(this.helpData['__commands']).length;
 
         const msg = `Hello! Currently running version ${this.meta.version} of ${this.meta.name} with ${pluginN} plugins loaded for a total`
-            + ` of ${commandsN} commands.  Please ${this.meta.prefix}plugins or ${this.meta.prefix}commands for more information.`;
+            + ` of ${commandsN} commands.  ${this.meta.prefix}plugins or ${this.meta.prefix}commands for more information.`
+            + ` Contribute! https://github.com/EdwardDrapkin/norbert-bot`;
 
         norbert.client.say(channel, msg);
     }

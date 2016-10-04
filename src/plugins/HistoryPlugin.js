@@ -136,7 +136,7 @@ export default class HistoryPlugin extends SimpleChanMsgPlugin {
         });
     }
 
-    addToRecent(type, message) {
+    addToRecent(type:string, message:{to:string, from:string, message: string}) {
         if(!this.recent.hasOwnProperty(message.to)) {
             this.recent[message.to] = {};
         }

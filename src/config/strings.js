@@ -1,6 +1,28 @@
 export default {
     error: "There has been an unexpected error",
 
+    Spotify: {
+        help: {
+            overview: "Spotify Plugin",
+            commands: {
+                spotArtist: "(artist) - search for an artist on Spotify.",
+                spotTrack: "(track) - search for a track on Spotify.",
+                playlist: "Show the channel playlist.",
+                renamePlaylist: "Rename the channel playlist, if you're so naughty.",
+                listTrack: "(track [spotify:track:XXX]) - add a track to the channel playlist.",
+                startSpotifyAuth: "[BOT OWNER] - login with OAuth to Spotify.  This gives me access to your spotify account, click at your own risk.",
+                expireSpotifyAuth: "Stop auto-renewing auth tokens"
+            }
+        },
+        song: "{sender}, here's your song! {uri} - {artist} / {album} - {name}",
+        authStart: "{sender} has authenticated the bot with Spotify!",
+        playlist: "Channel playlist [{playlist}]: {uri}",
+        playlistUpdated: "Channel playlist is now named {name}!",
+        playlistTrackAdded: "{sender} added songs to the channel playlist! Songs added: {songs}",
+        artist: "[{name} ({popularity}) {uri}]",
+        track: "[{artist} / {album} - {title} ({uri})]",
+    },
+
     LastFm: {
         help: {
             overview: "Last.FM API Plugin",
