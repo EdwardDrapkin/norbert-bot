@@ -47,7 +47,7 @@ export const spotifyOpts = {
         // spotify:user:1219255713:playlist:5ZwTkr7PW8quIg4pV2H1Wj
         userId: '1219255713',
         sharedPlaylistId: '5ZwTkr7PW8quIg4pV2H1Wj',
-        api: 'http://drapkin.me:12345/spotify/callback'
+        api: 'https://drapkin.me/norbert/spotify/callback'
     }
 };
 

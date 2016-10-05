@@ -100,12 +100,17 @@ export default class SpotifyPlugin extends SimpleChanMsgPlugin {
             this.client.say(channel, template('Spotify.authStart', {sender}));
 
             this.oAuthPoller = setInterval(() => {
+                this.log.trace("attempting to refresh access token");
                 this.spotify.refreshAccessToken().then(data => {
                     const tokenExpirationEpoch = (new Date().getTime() / 1000) + data.body['expires_in'];
                     this.log.trace('Refreshed token. It now expires in ' + Math.floor(
                             tokenExpirationEpoch - new Date().getTime() / 1000) + ' seconds!')
                 }).catch(err => this.log.error(err))
-            }, 1000 * 15 * 60);
+            }, 1000 * 60);
+
+            console.log(this.oAuthPoller);
+
+            this.log.trace("Setup oAuth polling with ID " + this.oAuthPoller);
         }).catch(err => this.log.error(err));
     }
 
