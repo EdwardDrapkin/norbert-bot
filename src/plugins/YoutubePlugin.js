@@ -63,7 +63,7 @@ export default class YouTubePlugin extends Plugin {
                     let attrs = {
                         title: result.items[0].snippet.title,
                         duration: result.items[0].contentDetails.duration.replace('PT', '').replace(/([HMS])/g,
-                            ':').replace(/:$/, '').replace(/(\d)(?!\d)/g, '0$1'),
+                            ':').replace(/:$/, '').replace(/:(\d)(?!\d)/g, ':0$1'),
                         views: humanize.numberFormat(result.items[0].statistics.viewCount, 0),
                         likes: humanize.numberFormat(result.items[0].statistics.likeCount, 0)
                     };

@@ -11,6 +11,7 @@ import mediainfo from 'mediainfo-q';
 import temp from 'temp';
 import fs from 'fs';
 import http from 'http';
+import dns from 'dns';
 import template from 'lib/template';
 
 temp.track();
@@ -35,10 +36,12 @@ const request = (...args) => {
     });
 };
 
+export type handler = (str: string, response: http.IncomingMessage, body: string, announce: (msg: string)=>void)=>boolean;
+export type norbertChanMethod = (channel: string, sender: string, message: string, client: Norbert, triggered: string)=>void;
+export type trigger = (word: string, sender: string, channel: string) => false|norbertChanMethod;
+
 export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
-    handlers: [
-        (str:string, response:http.IncomingMessage, body: string, announce:(msg:string)=>void)=>boolean
-    ];
+    handlers: [ handler ];
 
     init(norbert:Norbert) {
         super.init(norbert);
@@ -52,11 +55,11 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     }
 
 
-    addHandler(handler:(str:string, response:http.IncomingMessage, body:string, announce:(msg:string)=>void)=>boolean) {
+    addHandler(handler:handler) {
         this.handlers.unshift(handler);
     }
 
-    getTriggers() :[ (word:string, sender:string, channel:string) => false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void] {
+    getTriggers() :[trigger] {
         return [
             this.isUrl.bind(this)
         ];
@@ -70,7 +73,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
         return "UrlTitle";
     }
 
-    isUrl(word:string, sender:string, channel:string) :false|(channel:string, sender:string, message:string, client:Norbert, triggered:string)=>void {
+    isUrl(word:string, sender:string, channel:string) : false|norbertChanMethod {
         return word.match(/[^\b]+\.[a-z]{2,6}/i) != null ? this.getUrlTitle.bind(this) : false;
     }
 
@@ -79,26 +82,45 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
             triggered = `http://${triggered}`;
         }
 
-        _request({gzip: true, method: 'HEAD', uri: url.parse(triggered), timeout: 15000}, (err, headResponse, headBody) => {
+        const parsed = url.parse(triggered);
 
+        if(!parsed.hostname) {
+            return;
+        }
+
+        dns.lookup(parsed.hostname, 4, (err, address) => {
             if(err) {
-                console.error(err);
+                this.log.warn(err);
                 return;
             }
 
-            let status = false;
-            let i = -1;
-
-            while(status == false && i + 1 < this.handlers.length) {
-                status = this.handlers[++i](triggered, headResponse, headBody, (msg) => {
-                    norbert.client.say(channel, template('UrlTitle.title', {sender, msg}));
-                });
+            if(address === '127.0.0.1' || address === '::1') {
+                this.log.warn('Address resolved to localhost: ' + triggered);
+                return;
             }
+
+            _request({gzip: true, method: 'HEAD', uri: url.parse(triggered), timeout: 15000},
+                (err, headResponse, headBody) => {
+
+                    if(err) {
+                        this.log.error(err);
+                        return;
+                    }
+
+                    let status = false;
+                    let i = -1;
+
+                    while(status == false && i + 1 < this.handlers.length) {
+                        status = this.handlers[++i](triggered, headResponse, headBody, (msg) => {
+                            norbert.client.say(channel, template('UrlTitle.title', {sender, msg}));
+                        });
+                    }
+                });
         });
     }
 
     videoHandler(str:string, resp:http.IncomingMessage, body:string, announce:(msg:string)=>void):boolean {
-        if(resp.headers['content-type'].startsWith('video/')) {
+        if(resp && resp.headers && resp.headers['content-type'] && resp.headers['content-type'].startsWith('video/')) {
             const tmp = str.replace(/[\W]/ig, '_');
 
             temp.open(tmp, (err, tempPath) => {
@@ -146,7 +168,7 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     }
 
     imageHandler(str:string, resp:http.IncomingMessage, body:string, announce:(msg:string)=>void):boolean {
-        if(resp.headers['content-type'].startsWith('image/')) {
+        if(resp && resp.headers && resp.headers['content-type'] && resp.headers['content-type'].startsWith('image/')) {
             request(str, (error, resp, _body) => {
                 if(!error) {
                     try {
@@ -182,12 +204,12 @@ export default class UrlTitlePlugin extends SimpleChanDaemonPlugin {
     }
 
     titleTagHandler(str:string, resp:http.IncomingMessage, body:string, announce:(msg:string)=>void):boolean {
-        if(resp.headers['content-type'].startsWith('text/')) {
+        if(resp && resp.headers && resp.headers['content-type'] && resp.headers['content-type'].startsWith('text/')) {
             request(str, (error, resp, _body) => {
                 if(!error) {
-                    const title = cheerio.load(_body)('title').text().trim().replace('/\s+/g', ' ');
-                    if(title != "") {
-                        announce(title);
+                    const title = cheerio.load(_body)('title');
+                    if(title) {
+                        announce(title.text().trim().replace('/\s+/g', ' '));
                     }
                 }
             });

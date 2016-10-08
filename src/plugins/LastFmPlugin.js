@@ -83,7 +83,7 @@ export default class LastFmPlugin extends SimpleChanMsgPlugin {
                 norbert.client.say(channel, template('error'));
                 this.log.error({err});
             } else {
-                norbert.client.say(channel, template('LastFm.unknownUser', {user:sender, lastFm:lastFm}));
+                norbert.client.say(channel, template('LastFm.userSaved', {user:sender, lastFm:lastFm}));
             }
         });
     }
