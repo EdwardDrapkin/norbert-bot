@@ -125,6 +125,6 @@ export default {
             overview: "Advanced YouTube support"
         },
 
-        video: "You[Tube]: {title} ({duration}) / [Views: {views} / Likes: {likes}"
+        video: "You[Tube]: {title} ({duration}) / [Views: {views} / Likes: {likes}]"
     }
 }
