@@ -13,6 +13,7 @@ There are a variety of plugins available.
 * Help - pulls help data from other plugins and allows users to interface with it.
 * Karma - listens for karma (word++ or word--) and stores a karma value for it.
 * LastFm - provides now playing support from Last.FM
+* Poop - displays a poop emoji.
 * Quote - allows users to !addQuote and fetch them with !quote.
 * Reminder - integrates with [Wit.Ai](https://wit.ai) for NLP reminders.
 * Sed - s/search/replace/flags support with 5 lines of scrollback.
