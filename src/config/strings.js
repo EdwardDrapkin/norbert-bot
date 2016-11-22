@@ -42,7 +42,10 @@ export default {
 
     Poop: {
         help: {
-            overview: "Displays a poop emoji. LOL"
+            overview: "Poop Emoji Plugin",
+            commands: {
+                poop: "displays a poop emoji. LOL"
+            }
         },
 
         emoji: "💩"
