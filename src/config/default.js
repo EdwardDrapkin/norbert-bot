@@ -16,6 +16,7 @@ import TableFlipPlugin from 'plugins/TableFlipPlugin';
 import YouTubePlugin from 'plugins/YouTubePlugin';
 import UrbanDictionaryPlugin from 'plugins/UrbanDictionaryPlugin';
 import SpotifyPlugin from 'plugins/SpotifyPlugin';
+import PoopPlugin from 'plugins/PoopPlugin';
 
 import _strings from './strings';
 
@@ -87,6 +88,7 @@ export const userPlugins = [
     new LastFmPlugin(lastFmOpts.api_key, lastFmOpts.secret),
     new KarmaPolicePlugin(),
     new KarmaPlugin(),
+    new PoopPlugin(),
     new QuotePlugin(),
     new ReminderPlugin(witOpts.oauth_key),
     new SedPlugin(),

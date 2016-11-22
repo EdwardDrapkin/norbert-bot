@@ -40,6 +40,14 @@ export default {
         notP: "{user} is not currently listening to anything."
     },
 
+    Poop: {
+        help: {
+            overview: "Displays a poop emoji. LOL"
+        },
+
+        emoji: "💩"
+    },
+
     Quote: {
         help: {
             overview: "Just a quote plugin, y'all!",
